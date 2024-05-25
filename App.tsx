@@ -37,8 +37,8 @@ export default function App() {
         <StatusBar style="dark" />
         <NavigationContainer theme={theme}>
             <Stack.Navigator screenOptions={{headerShown: false}}>
-              <Stack.Screen name="Register" component={Register} />
               <Stack.Screen name="Login" component={Login} />
+              <Stack.Screen name="Register" component={Register} />
             </Stack.Navigator>
         </NavigationContainer>
         <Toast />

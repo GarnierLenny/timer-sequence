@@ -8,42 +8,29 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { showToast } from "../../../../utils/toast.utils";
 import { signUpUserEmailPassword } from "../../../../utils/firebase/auth.utils";
 import { useEffect, useState } from "react";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { featureComingSoon } from "../../../../utils/utils.utils";
 
-type RegisterForm = {
-  displayName: string;
+type LoginForm = {
   email: string;
   password: string;
-  confirmPassword: string;
 };
 
-const RegisterForm = ({navigation}: any) => {
+const LoginForm = ({navigation}: any) => {
   const [secure, setSecure] = useState<boolean>(true);
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterForm>({
+  } = useForm<LoginForm>({
     defaultValues: {
-      displayName: '',
       email: '',
       password: '',
-      confirmPassword: '',
     },
   })
 
   const onSubmit = (data: any) => {
-    console.log('oto');
-    if (data.password !== data.confirmPassword) {
-      showToast('error', "Passwords don't match", "Please try again");
-      control._reset({
-        displayName: data.displayName,
-        email: data.email,
-        password: '',
-        confirmPassword: ''});
-    } else {
-      console.log(data);
-      signUpUserEmailPassword(data.email, data.password, data.displayName);
-    }
+    console.log(data);
   }
 
   const defaultRules = {
@@ -53,20 +40,9 @@ const RegisterForm = ({navigation}: any) => {
 
   return (
     <View style={{flex: 2}}>
-      <View style={{display: 'flex', flex: 2, justifyContent: 'center'}}>
+      <View style={{display: 'flex', flex: 3, justifyContent: 'center'}}>
         <KeyboardAwareScrollView contentContainerStyle={{justifyContent: 'center', flex: 1}}>
-            <ScrollView contentContainerStyle={{gap: 15}}>
-              <Controller
-              control={control}
-              rules={defaultRules}
-              render={({field: {onChange, value}}) => (
-                <View>
-                <InputForm label="Username" value={value} setter={onChange}/>
-                {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
-                </View>
-              )}
-              name="displayName"
-              />
+            <ScrollView contentContainerStyle={{gap: 15, flex: 1, justifyContent: 'center'}}>
               <Controller
                 control={control}
                 rules={defaultRules}
@@ -89,30 +65,32 @@ const RegisterForm = ({navigation}: any) => {
               )}
                 name="password"
               />
-              <Controller
-                control={control}
-                rules={defaultRules}
-                render={({field: {onChange, value}}) => (
-                <View>
-                  <InputForm label="Confirm password" value={value} setter={onChange} secure={secure} right={<TextInput.Icon forceTextInputFocus={false} onPress={(() => setSecure(!secure))} icon={secure ? "eye" : "eye-off"} />} />
-                  {errors.confirmPassword && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
-                </View>
-                )}
-                name="confirmPassword"
-              />
+              <View>
+                <Text onPress={featureComingSoon} style={{...commonStyles.secondaryText, color: colors.clickable, alignSelf: 'flex-end', fontFamily: 'Inter-Bold'}}>Forgot password ?</Text>
+              </View>
             </ScrollView>
         </KeyboardAwareScrollView>
       </View>
-      <View style={{flex: 1, justifyContent: 'center'}}>
+      <View style={{flex: 1.5, justifyContent: 'center'}}>
         <Button mode="contained" style={{borderRadius: 0}} onPress={handleSubmit(onSubmit)}>
-          <Text style={styles.signupButtonText}>Sign up</Text>
+          <Text style={styles.signupButtonText}>Sign in</Text>
         </Button>
-        <View style={{flexDirection: 'row', gap: 5, alignSelf: 'center', marginTop: '5%'}}>
+      </View>
+      <View style={{flex: 1.5, alignItems: 'center'}}>
+        <View style={{flex: 0.5, width: '100%', borderTopWidth: 1, borderColor: colors.gray4}}>
+            <Text style={{top: -10, backgroundColor: '#fff', alignSelf: 'center', zIndex: 1}}>OR</Text>
+        </View>
+        <View style={{flex: 1, flexDirection: 'row', gap: 20, alignItems: 'center'}}>
+          <Ionicons onPress={featureComingSoon} name="logo-google" size={30} color="#000" />
+          <Ionicons onPress={featureComingSoon} name="logo-facebook" size={30} color="#000" />
+          <Ionicons onPress={featureComingSoon} name="logo-apple" size={30} color="#000" />
+        </View>
+        <View style={{flex: 1, flexDirection: 'row', gap: 5, alignItems: 'center'}}>
           <Text style={{...commonStyles.secondaryText, color: colors.gray3}}>
             Already have an account?
           </Text>
-          <Text onPress={() => navigation.navigate('Login')} style={{...commonStyles.secondaryText, color: colors.clickable, fontFamily: 'Inter-Bold'}}>
-            Sign in
+          <Text onPress={() => navigation.navigate('Register')} style={{...commonStyles.secondaryText, color: colors.clickable, fontFamily: 'Inter-Bold'}}>
+            Sign up
           </Text>
         </View>
       </View>
@@ -134,4 +112,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default RegisterForm;
+export default LoginForm;

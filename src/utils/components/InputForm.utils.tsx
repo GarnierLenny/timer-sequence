@@ -1,5 +1,5 @@
 import { TextInput, Text } from "react-native-paper";
-import { colors } from "../colors";
+import { colors } from "../colors.utils";
 import { commonStyles } from "../styles.utils";
 import { KeyboardTypeOptions } from "react-native";
 

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { colors } from './colors';
+import { colors } from './colors.utils';
 
 export const commonStyles = StyleSheet.create({
   viewWrapper: {
