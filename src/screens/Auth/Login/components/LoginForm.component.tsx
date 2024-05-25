@@ -6,7 +6,7 @@ import { InputForm } from "../../../../utils/components/InputForm.utils";
 import { commonStyles } from "../../../../utils/styles.utils";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { showToast } from "../../../../utils/toast.utils";
-import { signUpUserEmailPassword } from "../../../../utils/firebase/auth.utils";
+import { signInEmailPassword, signUpUserEmailPassword } from "../../../../utils/firebase/auth.utils";
 import { useEffect, useState } from "react";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { featureComingSoon } from "../../../../utils/utils.utils";
@@ -31,6 +31,7 @@ const LoginForm = ({navigation}: any) => {
 
   const onSubmit = (data: any) => {
     console.log(data);
+    signInEmailPassword(data.email, data.password);
   }
 
   const defaultRules = {
@@ -80,12 +81,12 @@ const LoginForm = ({navigation}: any) => {
         <View style={{flex: 0.5, width: '100%', borderTopWidth: 1, borderColor: colors.gray4}}>
             <Text style={{top: -10, backgroundColor: '#fff', alignSelf: 'center', zIndex: 1}}>OR</Text>
         </View>
-        <View style={{flex: 1, flexDirection: 'row', gap: 20, alignItems: 'center'}}>
+        <View style={{flex: 1, flexDirection: 'row', gap: 20, alignItems: 'flex-start'}}>
           <Ionicons onPress={featureComingSoon} name="logo-google" size={30} color="#000" />
           <Ionicons onPress={featureComingSoon} name="logo-facebook" size={30} color="#000" />
           <Ionicons onPress={featureComingSoon} name="logo-apple" size={30} color="#000" />
         </View>
-        <View style={{flex: 1, flexDirection: 'row', gap: 5, alignItems: 'center'}}>
+        <View style={{flex: 1, flexDirection: 'row', gap: 5, alignItems: 'flex-start'}}>
           <Text style={{...commonStyles.secondaryText, color: colors.gray3}}>
             Already have an account?
           </Text>
