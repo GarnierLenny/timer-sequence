@@ -7,7 +7,7 @@ import { commonStyles } from "../../../../utils/styles.utils";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { showToast } from "../../../../utils/toast.utils";
 import { signUpUserEmailPassword } from "../../../../utils/firebase/auth.utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type RegisterForm = {
   displayName: string;
@@ -31,7 +31,8 @@ const RegisterForm = ({navigation}: any) => {
     },
   })
 
-  const onSubmit = (data: RegisterForm) => {
+  const onSubmit = (data: any) => {
+    console.log('oto');
     if (data.password !== data.confirmPassword) {
       showToast('error', "Passwords don't match", "Please try again");
       control._reset({
@@ -39,14 +40,15 @@ const RegisterForm = ({navigation}: any) => {
         email: data.email,
         password: '',
         confirmPassword: ''});
+    } else {
+      console.log(data);
+      signUpUserEmailPassword(data.email, data.password, data.displayName);
     }
-    console.log(data);
-    signUpUserEmailPassword(data.email, data.password, data.displayName);
   }
 
   const defaultRules = {
     required: true,
-    maxLength: 20,
+    maxLength: 100,
   };
 
   return (
@@ -70,7 +72,7 @@ const RegisterForm = ({navigation}: any) => {
                 rules={defaultRules}
                 render={({field: {onChange, value}}) => (
                 <View>
-                  <InputForm label="Email" value={value} setter={onChange} />
+                  <InputForm type="email-address" label="Email" value={value} setter={onChange} />
                   {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
                 </View>
               )}
@@ -81,7 +83,7 @@ const RegisterForm = ({navigation}: any) => {
                 rules={defaultRules}
                 render={({field: {onChange, value}}) => (
                 <View>
-                  <InputForm label="Password" value={value} setter={onChange} secure={secure} right={<TextInput.Icon onPress={(() => setSecure(!secure))} icon={secure ? "eye" : "eye-off"} />} />
+                  <InputForm label="Password" value={value} setter={onChange} secure={secure} right={<TextInput.Icon forceTextInputFocus={false} onPress={(() => setSecure(!secure))} icon={secure ? "eye" : "eye-off"} />} />
                   {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
                 </View>
               )}
@@ -92,7 +94,7 @@ const RegisterForm = ({navigation}: any) => {
                 rules={defaultRules}
                 render={({field: {onChange, value}}) => (
                 <View>
-                  <InputForm label="Confirm password" value={value} setter={onChange} secure={secure} right={<TextInput.Icon onPress={(() => setSecure(!secure))} icon={secure ? "eye" : "eye-off"} />} />
+                  <InputForm label="Confirm password" value={value} setter={onChange} secure={secure} right={<TextInput.Icon forceTextInputFocus={false} onPress={(() => setSecure(!secure))} icon={secure ? "eye" : "eye-off"} />} />
                   {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
                 </View>
                 )}

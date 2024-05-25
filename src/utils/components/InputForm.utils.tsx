@@ -1,6 +1,7 @@
 import { TextInput, Text } from "react-native-paper";
 import { colors } from "../colors";
 import { commonStyles } from "../styles.utils";
+import { KeyboardTypeOptions } from "react-native";
 
 type InputFormProps = {
   value: any;
@@ -9,6 +10,7 @@ type InputFormProps = {
   secure?: boolean;
   left?: React.ReactNode;
   right?: React.ReactNode;
+  type?: KeyboardTypeOptions;
 };
 
 export const InputForm = ({
@@ -18,9 +20,11 @@ export const InputForm = ({
   secure = false,
   left = undefined,
   right = undefined,
+  type = "default",
 }: InputFormProps) => {
   return (
     <TextInput
+      keyboardType={type}
       autoCapitalize="none"
       secureTextEntry={secure}
       label={<Text style={{ ...commonStyles.primaryText}}>{label}</Text>}
