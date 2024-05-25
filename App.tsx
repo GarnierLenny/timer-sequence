@@ -6,10 +6,13 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Login from './src/screens/Auth/Login/Login.screen';
 import Register from './src/screens/Auth/Register/Register.screen';
 import { useFonts } from 'expo-font';
-
+import Toast from 'react-native-toast-message'
+import { LogBox } from 'react-native';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  LogBox.ignoreLogs(['Warning: TextInput.Icon: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.']);
+
   const [fontsLoaded, fontError] = useFonts({
     'Inter': require('./assets/fonts/Inter.ttf'),
     'Inter-Medium': require('./assets/fonts/Inter-Medium.ttf'),
@@ -38,6 +41,7 @@ export default function App() {
               <Stack.Screen name="Login" component={Login} />
             </Stack.Navigator>
         </NavigationContainer>
+        <Toast />
       </SafeAreaProvider>
     </PaperProvider>
   );

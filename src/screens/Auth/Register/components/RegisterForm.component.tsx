@@ -1,11 +1,13 @@
 import { useForm, Controller } from "react-hook-form";
-import { Button, Text } from "react-native-paper";
+import { Button, Text, TextInput } from "react-native-paper";
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from "../../../../utils/colors";
 import { InputForm } from "../../../../utils/components/InputForm.utils";
 import { commonStyles } from "../../../../utils/styles.utils";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { showToast } from "../../../../utils/toast.utils";
+import { signUpUserEmailPassword } from "../../../../utils/firebase/auth.utils";
+import { useState } from "react";
 
 type RegisterForm = {
   displayName: string;
@@ -15,6 +17,7 @@ type RegisterForm = {
 };
 
 const RegisterForm = ({navigation}: any) => {
+  const [secure, setSecure] = useState<boolean>(true);
   const {
     control,
     handleSubmit,
@@ -30,16 +33,22 @@ const RegisterForm = ({navigation}: any) => {
 
   const onSubmit = (data: RegisterForm) => {
     if (data.password !== data.confirmPassword) {
-      showToast('error', 'Form error', "Passwords don't match");
-      control._reset({password: '', confirmPassword: ''});
+      showToast('error', "Passwords don't match", "Please try again");
+      control._reset({
+        displayName: data.displayName,
+        email: data.email,
+        password: '',
+        confirmPassword: ''});
     }
     console.log(data);
+    signUpUserEmailPassword(data.email, data.password, data.displayName);
   }
 
   const defaultRules = {
     required: true,
     maxLength: 20,
   };
+
   return (
     <View style={{flex: 2}}>
       <View style={{display: 'flex', flex: 2, justifyContent: 'center'}}>
@@ -72,7 +81,7 @@ const RegisterForm = ({navigation}: any) => {
                 rules={defaultRules}
                 render={({field: {onChange, value}}) => (
                 <View>
-                  <InputForm label="Password" value={value} setter={onChange} />
+                  <InputForm label="Password" value={value} setter={onChange} secure={secure} right={<TextInput.Icon onPress={(() => setSecure(!secure))} icon={secure ? "eye" : "eye-off"} />} />
                   {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
                 </View>
               )}
@@ -83,7 +92,7 @@ const RegisterForm = ({navigation}: any) => {
                 rules={defaultRules}
                 render={({field: {onChange, value}}) => (
                 <View>
-                  <InputForm label="Confirm password" value={value} setter={onChange} />
+                  <InputForm label="Confirm password" value={value} setter={onChange} secure={secure} right={<TextInput.Icon onPress={(() => setSecure(!secure))} icon={secure ? "eye" : "eye-off"} />} />
                   {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
                 </View>
                 )}

@@ -6,15 +6,30 @@ type InputFormProps = {
   value: any;
   setter: any;
   label: any;
+  secure?: boolean;
+  left?: React.ReactNode;
+  right?: React.ReactNode;
 };
 
-export const InputForm = (props: InputFormProps) => {
+export const InputForm = ({
+  value,
+  setter,
+  label,
+  secure = false,
+  left = undefined,
+  right = undefined,
+}: InputFormProps) => {
   return (
     <TextInput
-      label={<Text style={{ ...commonStyles.primaryText}}>{props.label}</Text>}
+      autoCapitalize="none"
+      secureTextEntry={secure}
+      label={<Text style={{ ...commonStyles.primaryText}}>{label}</Text>}
       mode="outlined"
-      value={props.value}
+      value={value}
       textColor={colors.black}
-      onChangeText={text => props.setter(text)} />
+      onChangeText={text => setter(text)}
+      left={left}
+      right={right}
+    />
   );
 };
