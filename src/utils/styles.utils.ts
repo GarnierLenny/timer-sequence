@@ -5,14 +5,14 @@ export const commonStyles = StyleSheet.create({
   container: {
     display: 'flex',
     flex: 1,
-    backgroundColor: colors.black1,
+    backgroundColor: colors.white,
   },
   viewWrapper: {
-    width: '95%',
+    width: '90%',
     alignSelf: 'center',
   },
   primaryText: {
-    color: colors.white,
+    color: colors.black,
     fontFamily: "Inter",
   },
   secondaryText: {

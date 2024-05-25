@@ -5,8 +5,8 @@ import { Button } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Login from './src/screens/Auth/Login.screen';
-import Register from './src/screens/Auth/Register.screen';
+import Login from './src/screens/Auth/Login/Login.screen';
+import Register from './src/screens/Auth/Register/Register.screen';
 import { useFonts } from 'expo-font';
 
 const Stack = createNativeStackNavigator();
@@ -24,7 +24,7 @@ export default function App() {
   return (
     <PaperProvider>
       <SafeAreaProvider>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown: false}}>
               <Stack.Screen name="Register" component={Register} />

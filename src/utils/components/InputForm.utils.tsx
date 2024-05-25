@@ -11,16 +11,10 @@ type InputFormProps = {
 export const InputForm = (props: InputFormProps) => {
   return (
     <TextInput
-      label={<Text style={{ ...commonStyles.primaryText, color: colors.white }}>{props.label}</Text>}
-      placeholderTextColor="#fff"
-      activeUnderlineColor="#fff"
-      cursorColor="#fff"
-      mode="flat"
-      underlineColor="#fff"
-      selectionColor="#fff"
+      label={<Text style={{ ...commonStyles.primaryText}}>{props.label}</Text>}
+      mode="outlined"
       value={props.value}
-      textColor={colors.white}
-      style={{ backgroundColor: colors.gray1 }}
+      textColor={colors.black}
       onChangeText={text => props.setter(text)} />
   );
 };
