@@ -1,5 +1,4 @@
 import React, {  } from "react";
-import { View } from "react-native";
 import { commonStyles } from "../../../utils/styles.utils";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import RegisterForm from "./components/RegisterForm.component";

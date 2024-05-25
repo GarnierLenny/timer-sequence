@@ -1,11 +1,11 @@
 import { useForm, Controller } from "react-hook-form";
 import { Button, Text } from "react-native-paper";
-import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { colors } from "../../../../utils/colors";
 import { InputForm } from "../../../../utils/components/InputForm.utils";
 import { commonStyles } from "../../../../utils/styles.utils";
-import { useEffect } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { showToast } from "../../../../utils/toast.utils";
 
 type RegisterForm = {
   displayName: string;
@@ -28,7 +28,11 @@ const RegisterForm = ({navigation}: any) => {
     },
   })
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: RegisterForm) => {
+    if (data.password !== data.confirmPassword) {
+      showToast('error', 'Form error', "Passwords don't match");
+      control._reset({password: '', confirmPassword: ''});
+    }
     console.log(data);
   }
 
@@ -39,51 +43,53 @@ const RegisterForm = ({navigation}: any) => {
   return (
     <View style={{flex: 2}}>
       <View style={{display: 'flex', flex: 2, justifyContent: 'center'}}>
-        <KeyboardAwareScrollView contentContainerStyle={{justifyContent: 'center', flex: 1, gap: 15}}>
-            <Controller
-            control={control}
-            rules={defaultRules}
-            render={({field: {onChange, value}}) => (
-              <View>
-              <InputForm label="Username" value={value} setter={onChange}/>
-              {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
-              </View>
-            )}
-            name="displayName"
-            />
-            <Controller
+        <KeyboardAwareScrollView contentContainerStyle={{justifyContent: 'center', flex: 1}}>
+            <ScrollView contentContainerStyle={{gap: 15}}>
+              <Controller
               control={control}
               rules={defaultRules}
               render={({field: {onChange, value}}) => (
-              <View>
-                <InputForm label="Email" value={value} setter={onChange} />
+                <View>
+                <InputForm label="Username" value={value} setter={onChange}/>
                 {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
-              </View>
-            )}
-              name="email"
-            />
-            <Controller
-              control={control}
-              rules={defaultRules}
-              render={({field: {onChange, value}}) => (
-              <View>
-                <InputForm label="Password" value={value} setter={onChange} />
-                {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
-              </View>
-            )}
-              name="password"
-            />
-            <Controller
-              control={control}
-              rules={defaultRules}
-              render={({field: {onChange, value}}) => (
-              <View>
-                <InputForm label="Confirm password" value={value} setter={onChange} />
-                {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
-              </View>
+                </View>
               )}
-              name="confirmPassword"
-            />
+              name="displayName"
+              />
+              <Controller
+                control={control}
+                rules={defaultRules}
+                render={({field: {onChange, value}}) => (
+                <View>
+                  <InputForm label="Email" value={value} setter={onChange} />
+                  {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
+                </View>
+              )}
+                name="email"
+              />
+              <Controller
+                control={control}
+                rules={defaultRules}
+                render={({field: {onChange, value}}) => (
+                <View>
+                  <InputForm label="Password" value={value} setter={onChange} />
+                  {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
+                </View>
+              )}
+                name="password"
+              />
+              <Controller
+                control={control}
+                rules={defaultRules}
+                render={({field: {onChange, value}}) => (
+                <View>
+                  <InputForm label="Confirm password" value={value} setter={onChange} />
+                  {errors.displayName && (<Text style={{...styles.errorText, marginTop: 5}}>This field is required</Text>)}
+                </View>
+                )}
+                name="confirmPassword"
+              />
+            </ScrollView>
         </KeyboardAwareScrollView>
       </View>
       <View style={{flex: 1, justifyContent: 'center'}}>
