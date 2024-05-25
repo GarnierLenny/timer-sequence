@@ -12,7 +12,7 @@ import * as SplashScreen from 'expo-splash-screen';
 const Login = ({navigation}) => {
 
   return (
-    <SafeAreaView style={commonStyles.container}>
+    <SafeAreaView>
       <Text variant="headlineMedium" style={commonStyles.primaryText}>Log in to your account</Text>
       <Text variant="titleLarge" style={commonStyles.secondaryText}>Welcome back!</Text>
     </SafeAreaView>

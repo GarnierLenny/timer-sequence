@@ -2,14 +2,11 @@ import { StyleSheet } from 'react-native';
 import { colors } from './colors';
 
 export const commonStyles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flex: 1,
-    backgroundColor: colors.white,
-  },
   viewWrapper: {
+    display: 'flex',
     width: '90%',
     alignSelf: 'center',
+    // backgroundColor: '#f02',
   },
   primaryText: {
     color: colors.black,

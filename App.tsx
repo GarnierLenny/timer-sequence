@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { PaperProvider } from 'react-native-paper';
 import { Button } from 'react-native-paper';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Login from './src/screens/Auth/Login/Login.screen';
@@ -21,11 +21,20 @@ export default function App() {
   if (!fontsLoaded && !fontError) {
     return null;
   }
+
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: '#fff',
+    },
+  };
+
   return (
     <PaperProvider>
       <SafeAreaProvider>
         <StatusBar style="dark" />
-        <NavigationContainer>
+        <NavigationContainer theme={theme}>
             <Stack.Navigator screenOptions={{headerShown: false}}>
               <Stack.Screen name="Register" component={Register} />
               <Stack.Screen name="Login" component={Login} />
