@@ -1,26 +1,39 @@
 import { TextInput, Text } from "react-native-paper";
-import { colors } from "../colors";
+import { colors } from "../colors.utils";
 import { commonStyles } from "../styles.utils";
+import { KeyboardTypeOptions } from "react-native";
 
-type InputFormProps = {
+interface InputFormProps {
   value: any;
   setter: any;
   label: any;
-};
+  secure?: boolean;
+  left?: React.ReactNode;
+  right?: React.ReactNode;
+  type?: KeyboardTypeOptions;
+}
 
-export const InputForm = (props: InputFormProps) => {
+export const InputForm = ({
+  value,
+  setter,
+  label,
+  secure = false,
+  left = undefined,
+  right = undefined,
+  type = "default",
+}: InputFormProps) => {
   return (
     <TextInput
-      label={<Text style={{ ...commonStyles.primaryText, color: colors.white }}>{props.label}</Text>}
-      placeholderTextColor="#fff"
-      activeUnderlineColor="#fff"
-      cursorColor="#fff"
-      mode="flat"
-      underlineColor="#fff"
-      selectionColor="#fff"
-      value={props.value}
-      textColor={colors.white}
-      style={{ backgroundColor: colors.gray1 }}
-      onChangeText={text => props.setter(text)} />
+      keyboardType={type}
+      autoCapitalize="none"
+      secureTextEntry={secure}
+      label={<Text style={{ ...commonStyles.primaryText }}>{label}</Text>}
+      mode="outlined"
+      value={value}
+      textColor={colors.black}
+      onChangeText={(text) => setter(text)}
+      left={left}
+      right={right}
+    />
   );
 };

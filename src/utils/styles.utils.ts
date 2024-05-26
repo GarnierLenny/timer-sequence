@@ -1,18 +1,15 @@
-import { StyleSheet } from 'react-native';
-import { colors } from './colors';
+import { StyleSheet } from "react-native";
+import { colors } from "./colors.utils";
 
 export const commonStyles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flex: 1,
-    backgroundColor: colors.black1,
-  },
   viewWrapper: {
-    width: '95%',
-    alignSelf: 'center',
+    display: "flex",
+    width: "90%",
+    alignSelf: "center",
+    // backgroundColor: '#f02',
   },
   primaryText: {
-    color: colors.white,
+    color: colors.black,
     fontFamily: "Inter",
   },
   secondaryText: {
