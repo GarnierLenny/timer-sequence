@@ -1,28 +1,33 @@
-import { StatusBar } from "expo-status-bar";
-import React, { useEffect } from "react";
-import { View, StyleSheet } from "react-native";
-import { Button, Text } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { colors } from "../../../utils/colors.utils";
+import React, { useContext, useEffect } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { commonStyles } from "../../../utils/styles.utils";
-import { useFonts } from 'expo-font';
-import { useCallback } from 'react';
-import * as SplashScreen from 'expo-splash-screen';
 import LoginTitle from "./components/LoginTitle.component";
 import LoginForm from "./components/LoginForm.component";
+import { getAuth } from "firebase/auth";
+import { app } from "../../../utils/firebase/firebase.utils";
+import { UserContext } from "../../../utils/context.utils";
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
+  const auth = getAuth(app);
+  const {user, setUser} = useContext(UserContext);
+
+  const onAuthStateChanged = (user: Object) => {
+    if (user === null) return;
+    navigation.navigate('TabParent');
+    setUser(user);
+  }
+
+  useEffect(() => {
+    const subscriber = auth.onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
 
   return (
-    <SafeAreaView style={{...commonStyles.viewWrapper, flex: 1}}>
+    <SafeAreaView style={{ ...commonStyles.viewWrapper, flex: 1 }}>
       <LoginTitle />
       <LoginForm navigation={navigation} />
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-
-});
 
 export default Login;

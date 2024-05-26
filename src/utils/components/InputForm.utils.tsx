@@ -3,7 +3,7 @@ import { colors } from "../colors.utils";
 import { commonStyles } from "../styles.utils";
 import { KeyboardTypeOptions } from "react-native";
 
-type InputFormProps = {
+interface InputFormProps {
   value: any;
   setter: any;
   label: any;
@@ -11,7 +11,7 @@ type InputFormProps = {
   left?: React.ReactNode;
   right?: React.ReactNode;
   type?: KeyboardTypeOptions;
-};
+}
 
 export const InputForm = ({
   value,
@@ -27,11 +27,11 @@ export const InputForm = ({
       keyboardType={type}
       autoCapitalize="none"
       secureTextEntry={secure}
-      label={<Text style={{ ...commonStyles.primaryText}}>{label}</Text>}
+      label={<Text style={{ ...commonStyles.primaryText }}>{label}</Text>}
       mode="outlined"
       value={value}
       textColor={colors.black}
-      onChangeText={text => setter(text)}
+      onChangeText={(text) => setter(text)}
       left={left}
       right={right}
     />

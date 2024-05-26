@@ -1,11 +1,11 @@
-import { StyleSheet } from 'react-native';
-import { colors } from './colors.utils';
+import { StyleSheet } from "react-native";
+import { colors } from "./colors.utils";
 
 export const commonStyles = StyleSheet.create({
   viewWrapper: {
-    display: 'flex',
-    width: '90%',
-    alignSelf: 'center',
+    display: "flex",
+    width: "90%",
+    alignSelf: "center",
     // backgroundColor: '#f02',
   },
   primaryText: {
