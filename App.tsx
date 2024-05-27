@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { PaperProvider } from "react-native-paper";
-import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Login from "./src/screens/Auth/Login/Login.screen";
 import Register from "./src/screens/Auth/Register/Register.screen";
@@ -10,6 +10,7 @@ import { LogBox } from "react-native";
 import { useEffect, useState } from "react";
 import { Stack, BottomTabParent } from "./src/utils/navigators.utils";
 import { UserContext } from "./src/utils/context.utils";
+import { theme } from "./src/utils/styles.utils";
 
 export default function App() {
   LogBox.ignoreLogs([
@@ -18,11 +19,11 @@ export default function App() {
   ]);
   const [user, setUser] = useState<any>(null);
 
-  useEffect(() => {
-    if (user !== null) {
-      console.log('(App.tsx) - user change!');
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user !== null) {
+  //     console.log('(App.tsx) - user change!');
+  //   }
+  // }, [user]);
 
   const [fontsLoaded, fontError] = useFonts({
     Inter: require("./assets/fonts/Inter.ttf"),
@@ -33,14 +34,6 @@ export default function App() {
   if (!fontsLoaded && !fontError) {
     return null;
   }
-
-  const theme = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      background: "#fff",
-    },
-  };
 
   return (
     <PaperProvider>

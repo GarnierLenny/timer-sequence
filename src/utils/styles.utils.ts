@@ -1,5 +1,14 @@
 import { StyleSheet } from "react-native";
 import { colors } from "./colors.utils";
+import { DefaultTheme } from "@react-navigation/native";
+
+export const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: "#fff",
+  },
+};
 
 export const commonStyles = StyleSheet.create({
   viewWrapper: {
@@ -10,7 +19,7 @@ export const commonStyles = StyleSheet.create({
   },
   primaryText: {
     color: colors.black,
-    fontFamily: "Inter",
+    fontFamily: "Inter-Medium",
   },
   secondaryText: {
     color: colors.gray3,
