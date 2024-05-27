@@ -15,15 +15,25 @@ export const ActionButton = ({name, size, callback}: any) => {
   );
 }
 
+type Module = {
+  duration: number;
+  unit: 'second' | 'minute' | 'hour',
+};
+
 const Home = ({ navigation }: any) => {
   // useEffect(() => {
   //   getAuth().signOut();
   // }, []);
 
-  const sequences: object[] = [
+  const sequences: {title: string; modules: Module[]}[] = [
     {
-      title: 'toto',
-      modules: ['25m', '5m', '25m', '5m', '25m', '5m', '25m', '30m'],
+      title: 'Pomodoro',
+      modules: [
+        { duration: 25, unit: 'minute' },
+        { duration: 5, unit: 'minute' },
+        { duration: 25, unit: 'minute' },
+        { duration: 5, unit: 'minute' },
+      ],
     },
   ];
 
@@ -36,7 +46,8 @@ const Home = ({ navigation }: any) => {
         <FlatList
           data={sequences}
           contentContainerStyle={styles.flatlist}
-          renderItem={(sequence: any) => (
+          renderItem={(sequence: any) => {
+            return (
             <TouchableOpacity key={sequence.index} style={styles.flatlistElem}>
               <View style={styles.flatlistRight}>
                 <View style={styles.flatlistTitleContainer}>
@@ -46,16 +57,16 @@ const Home = ({ navigation }: any) => {
                 <View style={styles.flatlistElemModules}>
                   {sequence.item.modules.map((item: any, index: number) => (
                     <View key={index} style={styles.flatlistMapElem}>
-                      <Text variant="labelSmall">{item}</Text>
+                      <Text variant="labelSmall">{item.duration}</Text>
                     </View>
                   ))}
                 </View>
               </View>
               <View style={styles.flatlistLeft}>
-                <ActionButton name='play' size={20} callback={() => {navigation.navigate('Timer')}} />
+                <ActionButton name='play' size={20} callback={() => {navigation.navigate('Timer',  {sequence: sequences[sequence.index]})}} />
               </View>
             </TouchableOpacity>
-          )}
+          )}}
         />
       </View>
     </SafeAreaView>

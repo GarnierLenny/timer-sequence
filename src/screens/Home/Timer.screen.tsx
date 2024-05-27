@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { colors } from '../../utils/colors.utils';
+import { useRoute } from '@react-navigation/native';
 
 const TimerActionButton = ({callback, label, name, size, color}: any) => {
   return (
@@ -16,6 +17,9 @@ const TimerActionButton = ({callback, label, name, size, color}: any) => {
 };
 
 export const Timer = ({ navigation }: any) => {
+  const {sequence} = useRoute().params;
+
+  console.log(sequence);
   const back = () => {
     navigation.pop();
   };
@@ -26,7 +30,7 @@ export const Timer = ({ navigation }: any) => {
           <Icon name='chevron-left' size={40} />
         </View>
         <View style={styles.section1Title}>
-          <Text style={{fontFamily: 'Inter-Bold'}} variant="headlineSmall">Pomodoro</Text>
+          <Text style={{fontFamily: 'Inter-Bold'}} variant="headlineSmall">{sequence.title}</Text>
         </View>
         <View style={styles.section1Options}>
           <Icon name='cog' size={30} />
