@@ -15,7 +15,7 @@ export const ActionButton = ({name, size, callback}: any) => {
   );
 }
 
-const Home = () => {
+const Home = ({ navigation }: any) => {
   // useEffect(() => {
   //   getAuth().signOut();
   // }, []);
@@ -52,7 +52,7 @@ const Home = () => {
                 </View>
               </View>
               <View style={styles.flatlistLeft}>
-                <ActionButton name='play' size={20} callback={() => {}} />
+                <ActionButton name='play' size={20} callback={() => {navigation.navigate('Timer')}} />
               </View>
             </TouchableOpacity>
           )}
