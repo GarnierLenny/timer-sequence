@@ -18,7 +18,6 @@ export const ActionButton = ({name, size, callback}: any) => {
 type Module = {
   title: string;
   duration: number;
-  unit: 'second' | 'minute' | 'hour',
 };
 
 const Home = ({ navigation }: any) => {
@@ -29,8 +28,8 @@ const Home = ({ navigation }: any) => {
     {
       title: 'Pomodoro',
       modules: [
-        { title: 'Study', duration: 3, unit: 'minute' },
-        { title: 'Break', duration: 2, unit: 'minute' },
+        { title: 'Study', duration: 3 },
+        { title: 'Break', duration: 2 },
       ],
     },
   ];

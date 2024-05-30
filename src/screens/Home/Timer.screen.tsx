@@ -6,6 +6,7 @@ import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { colors } from '../../utils/colors.utils';
 import { useRoute } from '@react-navigation/native';
+import { formatSeconds } from '../../utils/utils.utils';
 
 const TimerActionButton = ({callback, label, name, size, color, disabled}: any) => {
   return (
@@ -18,13 +19,13 @@ const TimerActionButton = ({callback, label, name, size, color, disabled}: any) 
 
 export const Timer = ({ navigation }: any) => {
   const {sequence} = useRoute().params;
-  const [currentModule, setCurrentModule] = useState<number>(1);
+  const [currentModule, setCurrentModule] = useState<number>(0);
   const [play, setPlay] = useState<boolean>(true);
   const [restart, setRestart] = useState(0);
   const revisedSequence = [
-    { title: 'Start', duration: 0, unit: 'seconds' },
+    { title: 'Start', duration: 3 },
     ...sequence.modules,
-    { title: 'End', duration: 0, unit: 'seconds' }
+    { title: 'End', duration: 0 }
   ];
 
   const back = () => {
@@ -64,7 +65,7 @@ export const Timer = ({ navigation }: any) => {
             colors={['#72bcd4', '#72bcd4']}
             colorsTime={[100, 0]}
           >
-            {({ remainingTime }) => <Text variant="displayMedium" style={{fontFamily: 'Inter-Bold'}}>{remainingTime}</Text>}
+            {({ remainingTime }) => <Text variant="displaySmall" style={{fontFamily: 'Inter-Bold'}}>{formatSeconds(remainingTime)}</Text>}
           </CountdownCircleTimer>
         </View>
         <View style={styles.section2CurrentModule}>
