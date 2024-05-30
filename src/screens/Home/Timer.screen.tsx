@@ -88,7 +88,7 @@ export const Timer = ({ navigation }: any) => {
         <TimerActionButton callback={() => setPlay(true)} name="play" disabled={play} label="Play" color={colors.black} size={40} />
         <TimerActionButton callback={() => setPlay(false)} name="pause" disabled={!play} label="Pause" color={colors.black} size={40} />
         <TimerActionButton callback={() => {
-          setCurrentModule(1);
+          setCurrentModule(0);
           setRestart(restart + 1);
         }} name="replay" label="Restart" color={colors.black} size={40} />
         <TimerActionButton callback={() => {
