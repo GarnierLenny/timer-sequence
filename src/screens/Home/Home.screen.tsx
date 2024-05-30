@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { commonStyles } from "../../utils/styles.utils";
 import { Button, Text } from 'react-native-paper';
@@ -16,6 +16,7 @@ export const ActionButton = ({name, size, callback}: any) => {
 }
 
 type Module = {
+  title: string;
   duration: number;
   unit: 'second' | 'minute' | 'hour',
 };
@@ -24,15 +25,12 @@ const Home = ({ navigation }: any) => {
   // useEffect(() => {
   //   getAuth().signOut();
   // }, []);
-
   const sequences: {title: string; modules: Module[]}[] = [
     {
       title: 'Pomodoro',
       modules: [
-        { duration: 25, unit: 'minute' },
-        { duration: 5, unit: 'minute' },
-        { duration: 25, unit: 'minute' },
-        { duration: 5, unit: 'minute' },
+        { title: 'Study', duration: 3, unit: 'minute' },
+        { title: 'Break', duration: 2, unit: 'minute' },
       ],
     },
   ];
