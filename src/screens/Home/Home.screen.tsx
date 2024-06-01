@@ -17,7 +17,7 @@ export const ActionButton = ({name, size, callback}: any) => {
   );
 }
 
-type Module = {
+export type Module = {
   title: string;
   duration: number;
 };
