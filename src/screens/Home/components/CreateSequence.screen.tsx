@@ -102,6 +102,14 @@ export const CreateSequence = ({ navigation }) => {
 
   const [sequence, setSequence] = useState<Module[]>([
     { title: 'Start', duration: 3 },
+    { title: 'test', duration: 3 },
+    { title: 'test', duration: 3 },
+    { title: 'test', duration: 3 },
+    { title: 'test', duration: 3 },
+    { title: 'test', duration: 3 },
+    { title: 'test', duration: 3 },
+    { title: 'test', duration: 3 },
+    { title: 'test', duration: 3 },
     { title: '', duration: -1 },
     { title: 'End', duration: 0 },
   ]);
@@ -121,13 +129,21 @@ export const CreateSequence = ({ navigation }) => {
         <InputForm capitalize="sentences" value={name} setter={setName} label="Enter sequence name" />
       </View>
       {/* <View style={{backgroundColor: '#0b2'}}> */}
-        <Text variant="titleMedium" style={{fontFamily: 'Inter-Bold', marginBottom: 20}}>Organize your modules</Text>
+        <View style={{flexDirection: 'row', marginBottom: 20}}>
+          <View style={{flex: 5}}>
+            <Text variant="titleMedium" style={{fontFamily: 'Inter-Bold'}}>Organize your modules</Text>
+          </View>
+          <View style={{flex: 1, alignItems: 'flex-end'}}>
+            <Text variant="titleMedium" style={{fontFamily: 'Inter-Medium'}}>{sequence.length - 3}/8</Text>
+          </View>
+        </View>
         <ScrollView contentContainerStyle={styles.section3}>
         {sequence.map((item, index) => item.duration === -1 ?
         (
+          sequence.length < 11 && (
           <Button key={index} onPress={() => setIsVisible(true)} mode="contained" icon="plus" style={{borderRadius: 10}}>
             <Text variant="titleMedium" style={{color: colors.white}}>Create module</Text>
-          </Button>
+          </Button>)
         )
         :
         (
