@@ -102,14 +102,6 @@ export const CreateSequence = ({ navigation }) => {
 
   const [sequence, setSequence] = useState<Module[]>([
     { title: 'Start', duration: 3 },
-    { title: 'test', duration: 3 },
-    { title: 'test', duration: 3 },
-    { title: 'test', duration: 3 },
-    { title: 'test', duration: 3 },
-    { title: 'test', duration: 3 },
-    { title: 'test', duration: 3 },
-    { title: 'test', duration: 3 },
-    { title: 'test', duration: 3 },
     { title: '', duration: -1 },
     { title: 'End', duration: 0 },
   ]);
