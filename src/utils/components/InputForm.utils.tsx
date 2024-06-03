@@ -11,6 +11,7 @@ interface InputFormProps {
   left?: React.ReactNode;
   right?: React.ReactNode;
   type?: KeyboardTypeOptions;
+  capitalize?: "none" | "sentences" | "words" | "characters" | undefined;
 }
 
 export const InputForm = ({
@@ -21,11 +22,12 @@ export const InputForm = ({
   left = undefined,
   right = undefined,
   type = "default",
+  capitalize = 'none',
 }: InputFormProps) => {
   return (
     <TextInput
       keyboardType={type}
-      autoCapitalize="none"
+      autoCapitalize={capitalize}
       secureTextEntry={secure}
       label={<Text style={{ ...commonStyles.primaryText }}>{label}</Text>}
       mode="outlined"

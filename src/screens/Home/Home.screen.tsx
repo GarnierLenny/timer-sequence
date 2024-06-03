@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { commonStyles } from "../../utils/styles.utils";
 import { Button, Text } from 'react-native-paper';
@@ -6,6 +6,10 @@ import { getAuth } from "firebase/auth";
 import { StyleSheet, View, FlatList, TouchableOpacity } from 'react-native';
 import { colors } from "../../utils/colors.utils";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { UserContext } from "../../utils/context.utils";
+import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import { getSequencesDb } from "../../utils/firebase/firestore.utils";
+import { Module } from "../../utils/utils.utils";
 
 export const ActionButton = ({name, size, callback}: any) => {
   return (
@@ -15,47 +19,73 @@ export const ActionButton = ({name, size, callback}: any) => {
   );
 }
 
-const Home = () => {
+const formatModulesMap = (seconds: number) => {
+  if (seconds > 3600) {
+    const hours = Math.floor(seconds / 3600);
+    return `${hours}h`;
+  }
+  if (seconds > 60) {
+    const minutes = Math.floor(seconds / 60);
+    return `${minutes}m`;
+  }
+  return `${seconds}s`;
+};
+
+const Home = ({ navigation }: any) => {
+  const {user} = useContext(UserContext);
   // useEffect(() => {
   //   getAuth().signOut();
   // }, []);
 
-  const sequences: object[] = [
-    {
-      title: 'toto',
-      modules: ['25m', '5m', '25m', '5m', '25m', '5m', '25m', '30m'],
-    },
-  ];
+  const [sequences, setSequences]: {title: string; modules: Module[]}[] = useState<Module[]>([]);
+  const [key, setKey] = useState<number>(0);
+
+  useEffect(() => {
+    console.log('Render');
+    const getSequences = async () => {
+      const tmp: {title: string; modules: Module[]}[] = await getSequencesDb(user);
+      setSequences(tmp);
+    }
+
+    if (user !== null)
+      getSequences();
+
+    return () => {};
+  }, [user, key]);
 
   return (
     <SafeAreaView style={{ ...commonStyles.viewWrapper, flex: 1 }}>
       <View style={styles.topContainer}>
-        <Text variant="headlineSmall" style={{...commonStyles.primaryText}}>Your sequences</Text>
+        <Text variant="headlineSmall" style={{...commonStyles.primaryText, fontFamily: 'Inter-Bold'}}>Your sequences</Text>
+        <View style={{backgroundColor: colors.white, flexDirection: 'row'}}>
+          <Icon name="plus" size={30} onPress={() => navigation.push('CreateSequence', {refresh: () => setKey(key + 1)})} />
+        </View>
       </View>
       <View style={styles.bottomContainer}>
         <FlatList
           data={sequences}
           contentContainerStyle={styles.flatlist}
-          renderItem={(sequence: any) => (
+          renderItem={(sequence: any) => {
+            return (
             <TouchableOpacity key={sequence.index} style={styles.flatlistElem}>
               <View style={styles.flatlistRight}>
                 <View style={styles.flatlistTitleContainer}>
-                  <Text variant="headlineSmall" style={styles.flatlistElemTitle}>{sequence.item.title}</Text>
+                  <Text variant="titleMedium" style={styles.flatlistElemTitle}>{sequence.item.title}</Text>
                   <Text variant="labelMedium" style={styles.flatlistModuleNumber}>{sequence.item.modules.length} Modules</Text>
                 </View>
                 <View style={styles.flatlistElemModules}>
                   {sequence.item.modules.map((item: any, index: number) => (
                     <View key={index} style={styles.flatlistMapElem}>
-                      <Text variant="labelSmall">{item}</Text>
+                      <Text variant="labelSmall">{formatModulesMap(item.duration)}</Text>
                     </View>
                   ))}
                 </View>
               </View>
               <View style={styles.flatlistLeft}>
-                <ActionButton name='play' size={20} callback={() => {}} />
+                <ActionButton name='play' size={20} callback={() => {navigation.navigate('Timer',  {sequence: sequences[sequence.index]})}} />
               </View>
             </TouchableOpacity>
-          )}
+          )}}
         />
       </View>
     </SafeAreaView>
@@ -65,8 +95,10 @@ const Home = () => {
 const styles = StyleSheet.create({
   topContainer: {
     flex: 1,
+    flexDirection: 'row',
     backgroundColor: '#f2f00000',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   bottomContainer: {
     flex: 7,
@@ -109,17 +141,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     borderWidth: 1,
     borderRadius: 15,
+    backgroundColor: '#fff',
     margin: 2,
   },
   flatlistTitleContainer: {
-    flexDirection: 'row',
     backgroundColor: '#ff200000',
-    gap: 10
   },
   flatlistModuleNumber: {
     fontFamily: 'Inter-Medium',
     color: colors.gray4,
-    alignSelf: 'center'
+    marginBottom: '5%',
   },
 });
 
