@@ -1,5 +1,10 @@
 import { showToast } from "./toast.utils";
 
+export type Module = {
+  title: string;
+  duration: number;
+};
+
 export const featureComingSoon = () => {
   showToast("info", "This feature is coming soon", "Stay tuned!");
 };

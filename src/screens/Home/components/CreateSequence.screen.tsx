@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
@@ -6,9 +6,10 @@ import { Text, TextInput, Button, Portal, Modal } from 'react-native-paper';
 import { InputForm } from "../../../utils/components/InputForm.utils";
 import { commonStyles } from "../../../utils/styles.utils";
 import { colors } from "../../../utils/colors.utils";
-import { Module } from "../Home.screen";
-import { formatSecondsString } from "../../../utils/utils.utils";
+import { Module, formatSecondsString } from "../../../utils/utils.utils";
 import ScrollPicker from "react-native-wheel-scrollview-picker";
+import { createSequenceDb } from "../../../utils/firebase/firestore.utils";
+import { UserContext } from "../../../utils/context.utils";
 
 const width = Dimensions.get('screen').width * 0.9;
 
@@ -102,9 +103,12 @@ export const CreateSequence = ({ navigation }) => {
   const [seconds, setSeconds] = useState<number>(1);
   const [minutes, setMinutes] = useState<number>(1);
   const [hours, setHours] = useState<number>(1);
+  const {user} = useContext(UserContext);
 
   const [sequence, setSequence] = useState<Module[]>([
     { title: 'Start', duration: 3 },
+    { title: 'test1', duration: 3 },
+    { title: 'test2', duration: 3 },
     { title: '', duration: -1 },
     { title: 'End', duration: 0 },
   ]);
@@ -117,6 +121,11 @@ export const CreateSequence = ({ navigation }) => {
     sequence[index + offset] = tmp;
     setSequence(sequence.map(item => item));
   }
+
+  const createSequence = async () => {
+    createSequenceDb(user, name === '' ? "Awesome sequence" : name, sequence.filter(item => item.duration !== -1));
+    navigation.pop();
+  };
 
   return (
     <SafeAreaView style={{flex: 1, width: '90%', alignSelf: 'center', gap: 20}}>
@@ -172,7 +181,7 @@ export const CreateSequence = ({ navigation }) => {
           </View>
         ))}
         </ScrollView>
-      <Button mode="contained" style={{marginBottom: 15}}>
+      <Button onPress={() => createSequence()} mode="contained" style={{marginBottom: 15}}>
         <Text style={{fontFamily: 'Inter-Bold', color: colors.white, paddingVertical: '3%'}}>Create sequence</Text>
       </Button>
       <CreateModuleModal units={{seconds, setSeconds, minutes, setMinutes, hours, setHours}} index={{selectedIndex, setSelectedIndex}} visible={{isVisible, setIsVisible}} sequence={{sequence, setSequence}} title={{moduleTitle, setModuleTitle}} />

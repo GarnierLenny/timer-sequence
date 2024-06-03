@@ -17,11 +17,6 @@ export const ActionButton = ({name, size, callback}: any) => {
   );
 }
 
-export type Module = {
-  title: string;
-  duration: number;
-};
-
 const formatModulesMap = (seconds: number) => {
   if (seconds > 3600) {
     const hours = Math.floor(seconds / 3600);
@@ -46,56 +41,8 @@ const Home = ({ navigation }: any) => {
         { title: 'Break', duration: 300 },
       ],
     },
-    {
-      title: 'Pomodoro',
-      modules: [
-        { title: 'Study', duration: 1500 },
-        { title: 'Break', duration: 300 },
-      ],
-    },
-    {
-      title: 'Pomodoro',
-      modules: [
-        { title: 'Study', duration: 1500 },
-        { title: 'Break', duration: 300 },
-      ],
-    },
-    {
-      title: 'Pomodoro',
-      modules: [
-        { title: 'Study', duration: 1500 },
-        { title: 'Break', duration: 300 },
-      ],
-    },
-    {
-      title: 'Pomodoro',
-      modules: [
-        { title: 'Study', duration: 1500 },
-        { title: 'Break', duration: 300 },
-      ],
-    },
-    {
-      title: 'Pomodoro',
-      modules: [
-        { title: 'Study', duration: 1500 },
-        { title: 'Break', duration: 300 },
-      ],
-    },
-    {
-      title: 'Pomodoro',
-      modules: [
-        { title: 'Study', duration: 1500 },
-        { title: 'Break', duration: 300 },
-      ],
-    },
   ];
-  const {user, setUser} = useContext(UserContext);
 
-  // const toto = async () => {
-  //   await setDoc(doc(db, "users", user.uid, "sequences", sequences[0].title), sequences[0]);
-  // }
-
-  // toto();
   return (
     <SafeAreaView style={{ ...commonStyles.viewWrapper, flex: 1 }}>
       <View style={styles.topContainer}>
