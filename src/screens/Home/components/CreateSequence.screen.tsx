@@ -106,6 +106,15 @@ export const CreateSequence = ({ navigation }) => {
     { title: 'End', duration: 0 },
   ]);
 
+  const changeOrder = (index: number, offset: number) => {
+    if ((index === 1 && offset === -1) || (index === sequence.length - 3 && offset === 1))
+      return;
+    const tmp = sequence[index];
+    sequence[index] = sequence[index + offset];
+    sequence[index + offset] = tmp;
+    setSequence(sequence.map(item => item));
+  }
+
   return (
     <SafeAreaView style={{flex: 1, width: '90%', alignSelf: 'center', gap: 20}}>
       <View style={styles.section1}>
@@ -150,8 +159,8 @@ export const CreateSequence = ({ navigation }) => {
               <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', gap: 5}}>
                 {index !== 0 && index !== sequence.length - 1 && (
                 <>
-                  <Icon name="arrow-up" size={25} />
-                  <Icon name="arrow-down" size={25} />
+                  <Icon name="arrow-up" onPress={() => changeOrder(index, -1)} color={index === 1 ? colors.gray4 : colors.black} size={25} />
+                  <Icon name="arrow-down" onPress={() => changeOrder(index, 1)} color={index === sequence.length - 3 ? colors.gray4 : colors.black} size={25} />
                   <Icon name="pencil" onPress={() => {setSelectedIndex(index); setIsVisible(true)}} size={25} />
                 </>
                 )}
