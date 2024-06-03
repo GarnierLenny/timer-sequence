@@ -1,19 +1,25 @@
-import { StyleSheet } from 'react-native';
-import { colors } from './colors';
+import { StyleSheet } from "react-native";
+import { colors } from "./colors.utils";
+import { DefaultTheme } from "@react-navigation/native";
+
+export const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: "#fff",
+  },
+};
 
 export const commonStyles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flex: 1,
-    backgroundColor: colors.black1,
-  },
   viewWrapper: {
-    width: '95%',
-    alignSelf: 'center',
+    display: "flex",
+    width: "90%",
+    alignSelf: "center",
+    // backgroundColor: '#f02',
   },
   primaryText: {
-    color: colors.white,
-    fontFamily: "Inter",
+    color: colors.black,
+    fontFamily: "Inter-Medium",
   },
   secondaryText: {
     color: colors.gray3,

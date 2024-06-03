@@ -1,8 +1,9 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 android
+API
 
-src/utils/firebase.utils.ts
+src/utils/firebase/*
 
 # dependencies
 node_modules/
