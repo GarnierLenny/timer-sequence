@@ -22,11 +22,6 @@ export const Timer = ({ navigation }: any) => {
   const [currentModule, setCurrentModule] = useState<number>(0);
   const [play, setPlay] = useState<boolean>(true);
   const [restart, setRestart] = useState(0);
-  const revisedSequence = [
-    { title: 'Start', duration: 3 },
-    ...sequence.modules,
-    { title: 'End', duration: 0 }
-  ];
 
   const back = () => {
     navigation.pop();
@@ -55,13 +50,13 @@ export const Timer = ({ navigation }: any) => {
             onComplete={() => {
               setCurrentModule(currentModule + 1);
               setRestart(restart + 1);
-              const newDuration = revisedSequence[currentModule];
+              const newDuration = sequence.modules[currentModule];
               if (newDuration === undefined)
                 return;
-              return { newInitialRemainingTime: revisedSequence[currentModule] ? 0 : newDuration.duration, shouldRepeat: currentModule === revisedSequence.length - 1 ? false : true, delay: 0 };
+              return { newInitialRemainingTime: sequence.modules[currentModule] ? 0 : newDuration.duration, shouldRepeat: currentModule === sequence.modules.length - 1 ? false : true, delay: 0 };
             }}
             strokeWidth={25}
-            duration={revisedSequence[currentModule] === undefined ? 0 : revisedSequence[currentModule].duration}
+            duration={sequence.modules[currentModule] === undefined ? 0 : sequence.modules[currentModule].duration}
             colors={['#72bcd4', '#72bcd4']}
             colorsTime={[100, 0]}
           >
@@ -71,15 +66,15 @@ export const Timer = ({ navigation }: any) => {
         <View style={styles.section2CurrentModule}>
           <View style={styles.moduleTextContainer}>
             {currentModule !== 0 && (
-              <Text style={{fontFamily: 'Inter', color: colors.gray4}} variant="titleMedium">{revisedSequence[currentModule - 1] === undefined ? '' : revisedSequence[currentModule - 1].title}</Text>
+              <Text style={{fontFamily: 'Inter', color: colors.gray4}} variant="titleMedium">{sequence.modules[currentModule - 1] === undefined ? '' : sequence.modules[currentModule - 1].title}</Text>
             )}
           </View>
           <View style={styles.moduleTextContainer}>
-          <Text style={{fontFamily: 'Inter-Bold'}} variant="titleLarge">{revisedSequence[currentModule] === undefined ? '' : revisedSequence[currentModule].title}</Text>
+          <Text style={{fontFamily: 'Inter-Bold'}} variant="titleLarge">{sequence.modules[currentModule] === undefined ? '' : sequence.modules[currentModule].title}</Text>
           </View>
           <View style={styles.moduleTextContainer}>
-            {currentModule !== revisedSequence.length - 1 && (
-              <Text style={{fontFamily: 'Inter', color: colors.gray4}} variant="titleMedium">{revisedSequence[currentModule + 1] === undefined ? '' : revisedSequence[currentModule + 1].title}</Text>
+            {currentModule !== sequence.modules.length - 1 && (
+              <Text style={{fontFamily: 'Inter', color: colors.gray4}} variant="titleMedium">{sequence.modules[currentModule + 1] === undefined ? '' : sequence.modules[currentModule + 1].title}</Text>
             )}
           </View>
         </View>
@@ -94,7 +89,7 @@ export const Timer = ({ navigation }: any) => {
         <TimerActionButton callback={() => {
           setCurrentModule(currentModule + 1);
           setRestart(restart + 1);
-        }} name="skip-next" disabled={currentModule === revisedSequence.length - 1} label="Skip" color={colors.black} size={40} />
+        }} name="skip-next" disabled={currentModule === sequence.modules.length - 1} label="Skip" color={colors.black} size={40} />
       </View>
     </SafeAreaView>
   );

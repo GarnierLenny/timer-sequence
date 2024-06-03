@@ -14,6 +14,7 @@ export default function App() {
   LogBox.ignoreLogs([
     "Warning: TextInput.Icon: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
     "Warning: TextInput.Icon: Support for defaultProps will be removed from function components in a future major release. Use JavaScript default parameters instead.",
+    'Non-serializable values were found in the navigation state',
   ]);
   const [user, setUser] = useState<any>(null);
 

@@ -8,6 +8,8 @@ import { colors } from "../../utils/colors.utils";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { UserContext } from "../../utils/context.utils";
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
+import { getSequencesDb } from "../../utils/firebase/firestore.utils";
+import { Module } from "../../utils/utils.utils";
 
 export const ActionButton = ({name, size, callback}: any) => {
   return (
@@ -30,26 +32,33 @@ const formatModulesMap = (seconds: number) => {
 };
 
 const Home = ({ navigation }: any) => {
+  const {user} = useContext(UserContext);
   // useEffect(() => {
   //   getAuth().signOut();
   // }, []);
-  const sequences: {title: string; modules: Module[]}[] = [
-    {
-      title: 'Pomodoro',
-      modules: [
-        { title: 'Study', duration: 1500 },
-        { title: 'Break', duration: 300 },
-      ],
-    },
-  ];
+
+  const [sequences, setSequences]: {title: string; modules: Module[]}[] = useState<Module[]>([]);
+  const [key, setKey] = useState<number>(0);
+
+  useEffect(() => {
+    console.log('Render');
+    const getSequences = async () => {
+      const tmp: {title: string; modules: Module[]}[] = await getSequencesDb(user);
+      setSequences(tmp);
+    }
+
+    if (user !== null)
+      getSequences();
+
+    return () => {};
+  }, [user, key]);
 
   return (
     <SafeAreaView style={{ ...commonStyles.viewWrapper, flex: 1 }}>
       <View style={styles.topContainer}>
         <Text variant="headlineSmall" style={{...commonStyles.primaryText, fontFamily: 'Inter-Bold'}}>Your sequences</Text>
         <View style={{backgroundColor: colors.white, flexDirection: 'row'}}>
-          <Icon name="plus" size={30} onPress={() => navigation.push('CreateSequence')} />
-          {/* <Icon name="" size={30} /> */}
+          <Icon name="plus" size={30} onPress={() => navigation.push('CreateSequence', {refresh: () => setKey(key + 1)})} />
         </View>
       </View>
       <View style={styles.bottomContainer}>
@@ -61,7 +70,7 @@ const Home = ({ navigation }: any) => {
             <TouchableOpacity key={sequence.index} style={styles.flatlistElem}>
               <View style={styles.flatlistRight}>
                 <View style={styles.flatlistTitleContainer}>
-                  <Text variant="headlineSmall" style={styles.flatlistElemTitle}>{sequence.item.title}</Text>
+                  <Text variant="titleMedium" style={styles.flatlistElemTitle}>{sequence.item.title}</Text>
                   <Text variant="labelMedium" style={styles.flatlistModuleNumber}>{sequence.item.modules.length} Modules</Text>
                 </View>
                 <View style={styles.flatlistElemModules}>
@@ -136,14 +145,12 @@ const styles = StyleSheet.create({
     margin: 2,
   },
   flatlistTitleContainer: {
-    flexDirection: 'row',
     backgroundColor: '#ff200000',
-    gap: 10
   },
   flatlistModuleNumber: {
     fontFamily: 'Inter-Medium',
     color: colors.gray4,
-    alignSelf: 'center'
+    marginBottom: '5%',
   },
 });
 

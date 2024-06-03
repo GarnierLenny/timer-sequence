@@ -19,6 +19,7 @@
     "expo-splash-screen": "^0.27.4",
     "expo-status-bar": "~1.12.1",
     "firebase": "^10.12.1",
+    "global": "^4.4.0",
     "react": "18.2.0",
     "react-hook-form": "^7.51.5",
     "react-native": "0.74.1",
@@ -30,6 +31,7 @@
     "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
     "react-native-toast-message": "^2.2.0",
+    "react-native-uuid": "^2.0.2",
     "react-native-vector-icons": "^10.1.0",
     "react-native-wheel-scrollview-picker": "^2.0.4"
   },

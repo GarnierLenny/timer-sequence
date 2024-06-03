@@ -10,6 +10,7 @@ import { Module, formatSecondsString } from "../../../utils/utils.utils";
 import ScrollPicker from "react-native-wheel-scrollview-picker";
 import { createSequenceDb } from "../../../utils/firebase/firestore.utils";
 import { UserContext } from "../../../utils/context.utils";
+import { useRoute } from "@react-navigation/native";
 
 const width = Dimensions.get('screen').width * 0.9;
 
@@ -103,12 +104,11 @@ export const CreateSequence = ({ navigation }) => {
   const [seconds, setSeconds] = useState<number>(1);
   const [minutes, setMinutes] = useState<number>(1);
   const [hours, setHours] = useState<number>(1);
-  const {user} = useContext(UserContext);
+  const {user, setUser} = useContext(UserContext);
+  const {refresh} = useRoute().params;
 
   const [sequence, setSequence] = useState<Module[]>([
     { title: 'Start', duration: 3 },
-    { title: 'test1', duration: 3 },
-    { title: 'test2', duration: 3 },
     { title: '', duration: -1 },
     { title: 'End', duration: 0 },
   ]);
@@ -124,6 +124,7 @@ export const CreateSequence = ({ navigation }) => {
 
   const createSequence = async () => {
     createSequenceDb(user, name === '' ? "Awesome sequence" : name, sequence.filter(item => item.duration !== -1));
+    refresh();
     navigation.pop();
   };
 
