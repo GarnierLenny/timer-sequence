@@ -39,39 +39,72 @@ const Picker = ({label, max, setter}) => {
   )
 };
 
+const CreateModuleModal = ({index, visible, title, sequence}: any) => {
+  const createModule = (hours: any, minutes: any, seconds: any) => {
+    visible.setIsVisible(false);
+    if (title.moduleTitle === '') {
+      title.moduleTitle = 'Awesome module';
+    }
+    sequence.sequence.splice(sequence.sequence.length - 2, 0, {
+      title: title.moduleTitle,
+      duration: seconds + (minutes * 60) + (hours * 3600),
+    });
+    title.setModuleTitle('');
+  };
+
+  const deleteModule = () => {
+    sequence.sequence.splice(index.selectedIndex, 1);
+    sequence.setSequence(sequence.sequence.map(item => item));
+    visible.setIsVisible(false);
+    index.setSelectedIndex(-1);
+  };
+
+  return (
+    <Portal>
+        <Modal dismissableBackButton={true} contentContainerStyle={styles.modalContainer} visible={visible.isVisible} onDismiss={() => visible.setIsVisible(false)}>
+          <View style={{flex: 2, justifyContent: 'center', width: '85%'}}>
+            <InputForm capitalize="sentences" value={title.moduleTitle} setter={title.setModuleTitle} label="Enter module name" />
+          </View>
+          <View style={{flex: 6, alignItems: 'center', justifyContent: 'center'}}>
+            <View style={{height: '80%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20}}>
+              <Picker label="Hours" max={99} setter={() => {}} />
+              <Picker label="Minutes" max={60} setter={() => {}} />
+              <Picker label="Seconds" max={60} setter={() => {}} />
+            </View>
+          </View>
+          <View style={{flex: 1, width: '95%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              {index.selectedIndex !== -1 && (
+                <Button onPress={() => deleteModule()} mode="text">
+                  <Text style={{fontFamily: "Inter-Bold", color: colors.redError}}>Delete module</Text>
+                </Button>
+              )}
+            </View>
+            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+              <Button onPress={() => visible.setIsVisible(false)} mode="text">
+                <Text style={{fontFamily: "Inter-Medium"}}>Cancel</Text>
+              </Button>
+              <Button onPress={() => createModule(0, 0, 0)} mode="text">
+                <Text style={{fontFamily: "Inter-Medium"}}>Done</Text>
+              </Button>
+            </View>
+          </View>
+        </Modal>
+      </Portal>
+  );
+}
+
 export const CreateSequence = ({ navigation }) => {
   const [name, setName] = useState<string>('');
   const [moduleTitle, setModuleTitle] = useState<string>('');
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  // let sequence = ['3m', '4m', '', '', '', '', '', '']
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
 
   const [sequence, setSequence] = useState<Module[]>([
     { title: 'Start', duration: 3 },
-    { title: 'test', duration: 5 },
     { title: '', duration: -1 },
     { title: 'End', duration: 0 },
   ]);
-
-  // useEffect(() => {
-  //   console.log('bb', sequence);
-  // }, [sequence]);
-
-  const deleteItem = (index: number) => {
-    sequence.splice(index, 1);
-    setSequence(sequence.map(item => item));
-  };
-
-  const createModule = (title: string, hours: any, minutes: any, seconds: any) => {
-    setIsVisible(false);
-    sequence.splice(sequence.length - 2, 0, {
-      title: title,
-      duration: 5,
-    });
-    // console.log('from', copy);
-    // console.log('to', sequence);
-    // console.log()
-    setModuleTitle('');
-  };
 
   return (
     <SafeAreaView style={{flex: 1, width: '90%', alignSelf: 'center', gap: 20}}>
@@ -101,45 +134,28 @@ export const CreateSequence = ({ navigation }) => {
           <View key={index} style={styles.mapElem}>
             <View style={{flexDirection: 'row', padding: 20}}>
               <View style={{flex: 1, justifyContent: 'center'}}>
-                <Text variant="titleLarge" style={{fontFamily: 'Inter-Medium'}}>{item.title}</Text>
+                <Text variant="titleSmall" style={{fontFamily: 'Inter-Bold'}}>{item.title}</Text>
               </View>
               <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                 <Text style={{fontFamily: 'Inter-Medium'}}>{formatSecondsString(item.duration)}</Text>
               </View>
-              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', gap: 5}}>
-                <Icon name="arrow-up" size={25} />
-                <Icon name="arrow-down" size={25} />
-                <Icon onPress={() => deleteItem(index)} name="delete" color={colors.redError} size={25} />
+              <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', gap: 5}}>
+                {index !== 0 && index !== sequence.length - 1 && (
+                <>
+                  <Icon name="arrow-up" size={25} />
+                  <Icon name="arrow-down" size={25} />
+                  <Icon name="pencil" onPress={() => {setSelectedIndex(index); setIsVisible(true)}} size={25} />
+                </>
+                )}
               </View>
             </View>
           </View>
         ))}
         </ScrollView>
-      <Button style={{marginBottom: 15}}>
-        <Text>Create sequence</Text>
+      <Button mode="contained" style={{marginBottom: 15}}>
+        <Text style={{fontFamily: 'Inter-Bold', color: colors.white, paddingVertical: '3%'}}>Create sequence</Text>
       </Button>
-      <Portal>
-        <Modal dismissableBackButton={true} contentContainerStyle={styles.modalContainer} visible={isVisible} onDismiss={() => setIsVisible(false)}>
-          <View style={{flex: 2, justifyContent: 'center', width: '85%'}}>
-            <InputForm capitalize="sentences" value={moduleTitle} setter={setModuleTitle} label="Enter module name" />
-          </View>
-          <View style={{flex: 6, alignItems: 'center', justifyContent: 'center'}}>
-            <View style={{height: '80%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20}}>
-              <Picker label="Hours" max={99} setter={() => {}} />
-              <Picker label="Minutes" max={60} setter={() => {}} />
-              <Picker label="Seconds" max={60} setter={() => {}} />
-            </View>
-          </View>
-          <View style={{flex: 1, width: '95%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
-            <Button onPress={() => setIsVisible(false)} mode="text">
-              <Text style={{fontFamily: "Inter-Medium"}}>Cancel</Text>
-            </Button>
-            <Button onPress={() => createModule(moduleTitle, 0, 0, 0)} mode="text">
-              <Text style={{fontFamily: "Inter-Medium"}}>Done</Text>
-            </Button>
-          </View>
-        </Modal>
-      </Portal>
+      <CreateModuleModal index={{selectedIndex, setSelectedIndex}} visible={{isVisible, setIsVisible}} sequence={{sequence, setSequence}} title={{moduleTitle, setModuleTitle}} />
     </SafeAreaView>
   );
 };
@@ -182,9 +198,11 @@ const styles = StyleSheet.create({
     marginVertical: 30,
   },
   section3: {
-    flex: 1,
-    gap: 5,
+    // flex: 1,
+    gap: 8,
+    paddingBottom: '5%',
     // backgroundColor: '#b3f',
+    borderRadius: 20,
   },
   mapElem: {
     alignItems: 'center',
