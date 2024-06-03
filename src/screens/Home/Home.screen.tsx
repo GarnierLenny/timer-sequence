@@ -99,7 +99,7 @@ const Home = ({ navigation }: any) => {
   return (
     <SafeAreaView style={{ ...commonStyles.viewWrapper, flex: 1 }}>
       <View style={styles.topContainer}>
-        <Text variant="headlineSmall" style={{...commonStyles.primaryText}}>Your sequences</Text>
+        <Text variant="headlineSmall" style={{...commonStyles.primaryText, fontFamily: 'Inter-Bold'}}>Your sequences</Text>
         <View style={{backgroundColor: colors.white, flexDirection: 'row'}}>
           <Icon name="plus" size={30} onPress={() => navigation.push('CreateSequence')} />
           {/* <Icon name="" size={30} /> */}

@@ -23,11 +23,11 @@ const Picker = ({label, max, setter}) => {
         renderItem={(data, index) => {
           return (
           <View style={{padding: 20}} key={index}>
-            <Text variant="titleSmall" style={{fontFamily: 'Inter-Bold'}}>{data}</Text>
+            <Text variant="titleSmall" style={{fontFamily: 'Inter-Bold'}}>{data.toString().padStart(2, "0")}</Text>
           </View>
         )}}
         onValueChange={(data, selectedIndex) => {
-          //
+          setter(data);
         }}
         wrapperHeight={180}
         wrapperBackground="#fff"
@@ -39,7 +39,7 @@ const Picker = ({label, max, setter}) => {
   )
 };
 
-const CreateModuleModal = ({index, visible, title, sequence}: any) => {
+const CreateModuleModal = ({units, index, visible, title, sequence}: any) => {
   const createModule = (hours: any, minutes: any, seconds: any) => {
     visible.setIsVisible(false);
     if (title.moduleTitle === '') {
@@ -67,9 +67,9 @@ const CreateModuleModal = ({index, visible, title, sequence}: any) => {
           </View>
           <View style={{flex: 6, alignItems: 'center', justifyContent: 'center'}}>
             <View style={{height: '80%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 20}}>
-              <Picker label="Hours" max={99} setter={() => {}} />
-              <Picker label="Minutes" max={60} setter={() => {}} />
-              <Picker label="Seconds" max={60} setter={() => {}} />
+              <Picker label="Hours" max={99} setter={units.setSeconds} />
+              <Picker label="Minutes" max={60} setter={units.setMinutes} />
+              <Picker label="Seconds" max={60} setter={units.setHours} />
             </View>
           </View>
           <View style={{flex: 1, width: '95%', alignSelf: 'center', flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
@@ -84,7 +84,7 @@ const CreateModuleModal = ({index, visible, title, sequence}: any) => {
               <Button onPress={() => visible.setIsVisible(false)} mode="text">
                 <Text style={{fontFamily: "Inter-Medium"}}>Cancel</Text>
               </Button>
-              <Button onPress={() => createModule(0, 0, 0)} mode="text">
+              <Button onPress={() => createModule(units.seconds, units.minutes, units.hours)} mode="text">
                 <Text style={{fontFamily: "Inter-Medium"}}>Done</Text>
               </Button>
             </View>
@@ -99,6 +99,9 @@ export const CreateSequence = ({ navigation }) => {
   const [moduleTitle, setModuleTitle] = useState<string>('');
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+  const [seconds, setSeconds] = useState<number>(1);
+  const [minutes, setMinutes] = useState<number>(1);
+  const [hours, setHours] = useState<number>(1);
 
   const [sequence, setSequence] = useState<Module[]>([
     { title: 'Start', duration: 3 },
@@ -122,7 +125,7 @@ export const CreateSequence = ({ navigation }) => {
           <Icon onPress={() => navigation.pop()} name='chevron-left' size={40} />
         </View>
         <View style={styles.section1Title}>
-          <Text style={{fontFamily: 'Inter-Bold'}} variant="headlineSmall">Create sequence</Text>
+          <Text style={{fontFamily: 'Inter-Bold'}} variant="headlineSmall">Create a sequence</Text>
         </View>
         <View style={styles.section1Options} />
       </View>
@@ -172,7 +175,7 @@ export const CreateSequence = ({ navigation }) => {
       <Button mode="contained" style={{marginBottom: 15}}>
         <Text style={{fontFamily: 'Inter-Bold', color: colors.white, paddingVertical: '3%'}}>Create sequence</Text>
       </Button>
-      <CreateModuleModal index={{selectedIndex, setSelectedIndex}} visible={{isVisible, setIsVisible}} sequence={{sequence, setSequence}} title={{moduleTitle, setModuleTitle}} />
+      <CreateModuleModal units={{seconds, setSeconds, minutes, setMinutes, hours, setHours}} index={{selectedIndex, setSelectedIndex}} visible={{isVisible, setIsVisible}} sequence={{sequence, setSequence}} title={{moduleTitle, setModuleTitle}} />
     </SafeAreaView>
   );
 };
