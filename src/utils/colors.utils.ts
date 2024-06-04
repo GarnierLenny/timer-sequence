@@ -11,4 +11,5 @@ export const colors = {
   white: "#fff",
   redError: "#880808",
   clickable: "#4d49fc",
+  primary: '#F9A826',
 };
