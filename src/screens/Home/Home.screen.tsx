@@ -3,13 +3,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { commonStyles } from "../../utils/styles.utils";
 import { Button, Text } from 'react-native-paper';
 import { getAuth } from "firebase/auth";
-import { StyleSheet, View, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, FlatList, TouchableOpacity, Image } from 'react-native';
 import { colors } from "../../utils/colors.utils";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { UserContext } from "../../utils/context.utils";
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { getSequencesDb } from "../../utils/firebase/firestore.utils";
-import { Module } from "../../utils/utils.utils";
+import { Module, featureComingSoon } from "../../utils/utils.utils";
+import Logo from '../../assets/nothing.svg';
 
 export const ActionButton = ({name, size, callback}: any) => {
   return (
@@ -37,11 +38,11 @@ const Home = ({ navigation }: any) => {
   //   getAuth().signOut();
   // }, []);
 
-  const [sequences, setSequences]: {title: string; modules: Module[]}[] = useState<Module[]>([]);
+  const [sequences, setSequences] = useState<{title: string; modules: Module[]}[][]>([]);
   const [key, setKey] = useState<number>(0);
 
   useEffect(() => {
-    console.log('Render');
+    // console.log('Render');
     const getSequences = async () => {
       const tmp: {title: string; modules: Module[]}[] = await getSequencesDb(user);
       setSequences(tmp);
@@ -62,7 +63,27 @@ const Home = ({ navigation }: any) => {
         </View>
       </View>
       <View style={styles.bottomContainer}>
-        <FlatList
+        {sequences.length === 0 ?
+        (
+          <View style={{flex: 1}}>
+            <View style={{flex: 2, backgroundColor: '#f0f20000', justifyContent: 'center', gap: 5}}>
+              <Logo style={{alignSelf: 'center'}} width="60%" height="60%" />
+              <Text variant="titleLarge" style={{fontFamily: 'Inter-Bold', alignSelf: 'center'}}>Time is running!</Text>
+              <Text variant="titleMedium" style={{fontFamily: 'Inter-Medium', alignSelf: 'center'}}>You have no saved sequences yet</Text>
+            </View>
+            <View style={{flex: 1, backgroundColor: '#f0000002', gap: 10}}>
+              <Button onPress={() => navigation.push("CreateSequence", {refresh: () => setKey(key + 1)})} mode="contained" style={{borderRadius: 10, paddingVertical: '2%'}}>
+                <Text style={{fontFamily: 'Inter-Bold', color: colors.white}}>Create a sequence</Text>
+              </Button>
+              <Text style={{fontFamily: "Inter-Medium", alignSelf: 'center'}}>OR</Text>
+              <Button onPress={() => featureComingSoon()} mode="outlined" style={{borderRadius: 10, paddingVertical: '2%'}}>
+                <Text style={{fontFamily: 'Inter-Bold'}}>Browse public sequences</Text>
+              </Button>
+            </View>
+          </View>
+        )
+        :
+        (<FlatList
           data={sequences}
           contentContainerStyle={styles.flatlist}
           renderItem={(sequence: any) => {
@@ -86,7 +107,7 @@ const Home = ({ navigation }: any) => {
               </View>
             </TouchableOpacity>
           )}}
-        />
+        />)}
       </View>
     </SafeAreaView>
   );
