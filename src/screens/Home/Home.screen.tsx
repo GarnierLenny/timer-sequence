@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { commonStyles } from "../../utils/styles.utils";
 import { Button, Text } from 'react-native-paper';
 import { getAuth } from "firebase/auth";
-import { StyleSheet, View, FlatList, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { colors } from "../../utils/colors.utils";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { UserContext } from "../../utils/context.utils";
@@ -40,12 +40,14 @@ const Home = ({ navigation }: any) => {
 
   const [sequences, setSequences] = useState<{title: string; modules: Module[]}[][]>([]);
   const [key, setKey] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // console.log('Render');
     const getSequences = async () => {
       const tmp: {title: string; modules: Module[]}[] = await getSequencesDb(user);
       setSequences(tmp);
+      setLoading(false);
     }
 
     if (user !== null)
@@ -53,6 +55,15 @@ const Home = ({ navigation }: any) => {
 
     return () => {};
   }, [user, key]);
+
+  if (loading) {
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', gap: 15}}>
+        <ActivityIndicator size="large" color={colors.primary}/>
+        <Text variant="titleMedium" style={{fontFamily: 'Inter-Bold'}}>Retrieving your sequences...</Text>
+      </View>
+    )
+  }
 
   return (
     <SafeAreaView style={{ ...commonStyles.viewWrapper, flex: 1 }}>
