@@ -9,7 +9,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { UserContext } from "../../utils/context.utils";
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { getSequencesDb } from "../../utils/firebase/firestore.utils";
-import { Module, featureComingSoon } from "../../utils/utils.utils";
+import { Module, featureComingSoon, formatSeconds, formatSecondsHome, formatSecondsString } from "../../utils/utils.utils";
 import Logo from '../../assets/nothing.svg';
 
 export const ActionButton = ({name, size, callback}: any) => {
@@ -19,18 +19,6 @@ export const ActionButton = ({name, size, callback}: any) => {
     </TouchableOpacity>
   );
 }
-
-const formatModulesMap = (seconds: number) => {
-  if (seconds > 3600) {
-    const hours = Math.floor(seconds / 3600);
-    return `${hours}h`;
-  }
-  if (seconds > 60) {
-    const minutes = Math.floor(seconds / 60);
-    return `${minutes}m`;
-  }
-  return `${seconds}s`;
-};
 
 const Home = ({ navigation }: any) => {
   const {user} = useContext(UserContext);
@@ -105,12 +93,13 @@ const Home = ({ navigation }: any) => {
               <View style={styles.flatlistRight}>
                 <View style={styles.flatlistTitleContainer}>
                   <Text variant="titleMedium" style={styles.flatlistElemTitle}>{sequence.item.title}</Text>
-                  <Text variant="labelMedium" style={styles.flatlistModuleNumber}>{sequence.item.modules.length} Modules</Text>
+                  <Text variant="labelMedium" style={styles.flatlistModuleNumber}>{sequence.item.modules.length - 2} Modules</Text>
                 </View>
                 <View style={styles.flatlistElemModules}>
-                  {sequence.item.modules.map((item: any, index: number) => (
+                  {sequence.item.modules.map((item: any, index: number) => index !== 0 && index !== sequence.item.modules.length - 1 && (
                     <View key={index} style={styles.flatlistMapElem}>
-                      <Text variant="labelSmall">{formatModulesMap(item.duration)}</Text>
+                      <Text variant="labelSmall">{item.title} - </Text>
+                      <Text variant="labelSmall">{formatSecondsHome(item.duration)}</Text>
                     </View>
                   ))}
                 </View>
@@ -184,6 +173,7 @@ const styles = StyleSheet.create({
   flatlistMapElem:{
     paddingHorizontal: 5,
     borderWidth: 1,
+    flexDirection: 'row',
     borderRadius: 15,
     backgroundColor: '#fff',
     margin: 2,
