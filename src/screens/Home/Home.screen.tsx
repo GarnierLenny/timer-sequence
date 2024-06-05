@@ -62,7 +62,7 @@ const Home = ({ navigation }: any) => {
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', gap: 15}}>
         <ActivityIndicator size="large" color={colors.primary}/>
-        <Text variant="titleMedium" style={{fontFamily: 'Inter-Bold'}}>Retrieving your sequences...</Text>
+        <Text variant="titleMedium" style={{fontFamily: 'Inter-Medium'}}>Retrieving your sequences...</Text>
       </View>
     )
   }
@@ -101,7 +101,7 @@ const Home = ({ navigation }: any) => {
           contentContainerStyle={styles.flatlist}
           renderItem={(sequence: any) => {
             return (
-            <TouchableOpacity onPress={() => navigation.push('CreateSequence', {refresh: () => setKey(key + 1), existing: sequence})} key={sequence.index} style={styles.flatlistElem}>
+            <View key={sequence.index} style={styles.flatlistElem}>
               <View style={styles.flatlistRight}>
                 <View style={styles.flatlistTitleContainer}>
                   <Text variant="titleMedium" style={styles.flatlistElemTitle}>{sequence.item.title}</Text>
@@ -116,9 +116,15 @@ const Home = ({ navigation }: any) => {
                 </View>
               </View>
               <View style={styles.flatlistLeft}>
-                <ActionButton name='play' size={20} callback={() => {navigation.navigate('Timer',  {sequence: sequences[sequence.index]})}} />
+                {/* <ActionButton name='play' size={20} callback={() => {navigation.navigate('Timer',  {sequence: sequences[sequence.index]})}} /> */}
+                <Button onPress={() => {navigation.navigate('Timer',  {sequence: sequences[sequence.index]})}} icon="play" mode="contained" buttonColor={colors.primary} style={{borderRadius: 10}}>
+                  <Text style={{fontFamily: 'Inter-Bold', color: colors.white}}>Play</Text>
+              </Button>
+                <Button onPress={() => navigation.push('CreateSequence', {refresh: () => setKey(key + 1), existing: sequence})} icon={() => <Icon name="pencil" color={colors.secondary} size={17} />} mode="outlined" style={{borderRadius: 10, borderColor: colors.secondary}}>
+                  <Text style={{fontFamily: 'Inter-Bold', color: colors.secondary}}>Edit</Text>
+                </Button>
               </View>
-            </TouchableOpacity>
+            </View>
           )}}
         />)}
       </View>
@@ -161,6 +167,7 @@ const styles = StyleSheet.create({
   flatlistLeft: {
     // backgroundColor: '#fad',
     marginLeft: '5%',
+    gap: 5,
     alignSelf: 'center',
   },
   flatlistElemModules: {

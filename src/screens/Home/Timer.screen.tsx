@@ -57,7 +57,7 @@ export const Timer = ({ navigation }: any) => {
             }}
             strokeWidth={25}
             duration={sequence.modules[currentModule] === undefined ? 0 : sequence.modules[currentModule].duration}
-            colors={['#72bcd4', '#72bcd4']}
+            colors={[colors.primary, colors.primary]}
             colorsTime={[100, 0]}
           >
             {({ remainingTime }) => <Text variant="displaySmall" style={{fontFamily: 'Inter-Bold'}}>{formatSeconds(remainingTime)}</Text>}
@@ -70,7 +70,7 @@ export const Timer = ({ navigation }: any) => {
             )}
           </View>
           <View style={styles.moduleTextContainer}>
-          <Text style={{fontFamily: 'Inter-Bold'}} variant="titleLarge">{sequence.modules[currentModule] === undefined ? '' : sequence.modules[currentModule].title}</Text>
+            <Text style={{fontFamily: 'Inter-Bold'}} variant="titleLarge">{sequence.modules[currentModule] === undefined ? '' : sequence.modules[currentModule].title}</Text>
           </View>
           <View style={styles.moduleTextContainer}>
             {currentModule !== sequence.modules.length - 1 && (
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   section2CurrentModule: {
-    flex: 1,
+    flex: 2,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
@@ -135,7 +135,9 @@ const styles = StyleSheet.create({
   },
   moduleTextContainer: {
     flex: 1,
+    // backgroundColor: '#9b2',
     justifyContent: 'center',
+    textAlign: 'center',
     alignItems: 'center'
   },
   section3: {
