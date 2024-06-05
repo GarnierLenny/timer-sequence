@@ -119,7 +119,10 @@ export const CreateSequence = ({ navigation }) => {
   useEffect(() => {
     if (existing !== undefined && sequence.length === 3) {
       setUpdate(true);
-      existing.item.modules.splice(existing.item.modules.length - 1, 0, { title: '', duration: -1 });
+      const i = existing.item.modules.findIndex(elem => elem.duration === -1);
+      if (i === -1) {
+        existing.item.modules.splice(existing.item.modules.length - 1, 0, { title: '', duration: -1 });
+      }
       setSequence(existing.item.modules);
       setName(existing.item.title);
       setOldTitle(existing.item.title);
