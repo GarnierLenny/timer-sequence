@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { commonStyles } from "../../utils/styles.utils";
-import { Button, Text } from 'react-native-paper';
+import { Button, Text, Menu, Divider } from 'react-native-paper';
 import { getAuth } from "firebase/auth";
 import { StyleSheet, View, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { colors } from "../../utils/colors.utils";
@@ -14,8 +14,8 @@ import Logo from '../../assets/nothing.svg';
 
 export const ActionButton = ({name, size, callback}: any) => {
   return (
-    <TouchableOpacity style={{borderRadius: 10, padding: 10, borderWidth: 1}} onPress={callback}>
-      <MaterialCommunityIcons name={name} size={size} />
+    <TouchableOpacity style={{borderRadius: 10, backgroundColor: colors.white, padding: 10, borderWidth: 1, borderColor: colors.secondary}} onPress={callback}>
+      <MaterialCommunityIcons color={colors.secondary} name={name} size={size} />
     </TouchableOpacity>
   );
 }
@@ -41,12 +41,14 @@ const Home = ({ navigation }: any) => {
   const [sequences, setSequences] = useState<{title: string; modules: Module[]}[][]>([]);
   const [key, setKey] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const [visible, setVisible] = useState<boolean[]>([]);
 
   useEffect(() => {
     // console.log('Render');
     const getSequences = async () => {
       const tmp: {title: string; modules: Module[]}[] = await getSequencesDb(user);
       setSequences(tmp);
+      // setVisible(tmp.from({ length: tmp.length + 1 }, () => false));
       setLoading(false);
     }
 
@@ -68,9 +70,9 @@ const Home = ({ navigation }: any) => {
   return (
     <SafeAreaView style={{ ...commonStyles.viewWrapper, flex: 1 }}>
       <View style={styles.topContainer}>
-        <Text variant="headlineSmall" style={{...commonStyles.primaryText, fontFamily: 'Inter-Bold'}}>Your sequences</Text>
+        <Text variant="headlineSmall" style={{...commonStyles.primaryText, fontFamily: 'Inter-Bold', color: colors.secondary}}>Your sequences</Text>
         <View style={{backgroundColor: colors.white, flexDirection: 'row'}}>
-          <Icon name="plus" size={30} onPress={() => navigation.push('CreateSequence', {refresh: () => setKey(key + 1)})} />
+          <Icon name="plus" color={colors.secondary} size={30} onPress={() => navigation.push('CreateSequence', {refresh: () => setKey(key + 1)})} />
         </View>
       </View>
       <View style={styles.bottomContainer}>
@@ -83,12 +85,12 @@ const Home = ({ navigation }: any) => {
               <Text variant="titleMedium" style={{fontFamily: 'Inter-Medium', alignSelf: 'center'}}>You have no saved sequences yet</Text>
             </View>
             <View style={{flex: 1, backgroundColor: '#f0000002', gap: 10}}>
-              <Button onPress={() => navigation.push("CreateSequence", {refresh: () => setKey(key + 1)})} mode="contained" style={{borderRadius: 10, paddingVertical: '2%'}}>
+              <Button buttonColor={colors.secondary} onPress={() => navigation.push("CreateSequence", {refresh: () => setKey(key + 1)})} mode="contained" style={{borderRadius: 10, paddingVertical: '2%'}}>
                 <Text style={{fontFamily: 'Inter-Bold', color: colors.white}}>Create a sequence</Text>
               </Button>
               <Text style={{fontFamily: "Inter-Medium", alignSelf: 'center'}}>OR</Text>
-              <Button onPress={() => featureComingSoon()} mode="outlined" style={{borderRadius: 10, paddingVertical: '2%'}}>
-                <Text style={{fontFamily: 'Inter-Bold'}}>Browse public sequences</Text>
+              <Button onPress={() => featureComingSoon()} mode="outlined" style={{borderRadius: 10, paddingVertical: '2%', borderColor: colors.secondary}}>
+                <Text style={{fontFamily: 'Inter-Bold', color: colors.secondary}}>Browse public sequences</Text>
               </Button>
             </View>
           </View>
@@ -99,7 +101,7 @@ const Home = ({ navigation }: any) => {
           contentContainerStyle={styles.flatlist}
           renderItem={(sequence: any) => {
             return (
-            <TouchableOpacity key={sequence.index} style={styles.flatlistElem}>
+            <TouchableOpacity onPress={() => navigation.push('CreateSequence', {refresh: () => setKey(key + 1), existing: sequence})} key={sequence.index} style={styles.flatlistElem}>
               <View style={styles.flatlistRight}>
                 <View style={styles.flatlistTitleContainer}>
                   <Text variant="titleMedium" style={styles.flatlistElemTitle}>{sequence.item.title}</Text>
@@ -131,6 +133,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f00000',
     justifyContent: 'space-between',
     alignItems: 'center',
+    // borderBottomWidth: 1,
+    borderColor: colors.primary
   },
   bottomContainer: {
     flex: 7,
@@ -149,7 +153,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   flatlistElemTitle: {
-    fontFamily: 'Inter-Medium',
+    color: colors.secondary,
+    fontFamily: 'Inter-Bold',
     marginBottom: '2%',
     // backgroundColor: '#ff2000'
   },
@@ -181,8 +186,8 @@ const styles = StyleSheet.create({
   },
   flatlistModuleNumber: {
     fontFamily: 'Inter-Medium',
-    color: colors.gray4,
     marginBottom: '5%',
+    color: colors.primary,
   },
 });
 

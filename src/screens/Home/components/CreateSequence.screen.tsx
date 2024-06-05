@@ -8,7 +8,7 @@ import { commonStyles } from "../../../utils/styles.utils";
 import { colors } from "../../../utils/colors.utils";
 import { Module, formatSecondsString } from "../../../utils/utils.utils";
 import ScrollPicker from "react-native-wheel-scrollview-picker";
-import { createSequenceDb } from "../../../utils/firebase/firestore.utils";
+import { createSequenceDb, updateSequenceDb } from "../../../utils/firebase/firestore.utils";
 import { UserContext } from "../../../utils/context.utils";
 import { useRoute } from "@react-navigation/native";
 
@@ -105,13 +105,26 @@ export const CreateSequence = ({ navigation }) => {
   const [minutes, setMinutes] = useState<number>(1);
   const [hours, setHours] = useState<number>(1);
   const {user, setUser} = useContext(UserContext);
-  const {refresh} = useRoute().params;
+  const {refresh, existing} = useRoute().params;
+  const [update, setUpdate] = useState<boolean>(false);
+  const [oldTitle, setOldTitle] = useState<string>('');
+
 
   const [sequence, setSequence] = useState<Module[]>([
     { title: 'Start', duration: 3 },
     { title: '', duration: -1 },
     { title: 'End', duration: 0 },
   ]);
+
+  useEffect(() => {
+    if (existing !== undefined && sequence.length === 3) {
+      setUpdate(true);
+      existing.item.modules.splice(existing.item.modules.length - 1, 0, { title: '', duration: -1 });
+      setSequence(existing.item.modules);
+      setName(existing.item.title);
+      setOldTitle(existing.item.title);
+    };
+  }, []);
 
   const changeOrder = (index: number, offset: number) => {
     if ((index === 1 && offset === -1) || (index === sequence.length - 3 && offset === 1))
@@ -123,7 +136,10 @@ export const CreateSequence = ({ navigation }) => {
   }
 
   const createSequence = async () => {
-    createSequenceDb(user, name === '' ? "Awesome sequence" : name, sequence.filter(item => item.duration !== -1));
+    update === true ?
+      await updateSequenceDb(user, oldTitle, name === '' ? "Awesome sequence" : name, sequence.filter(item => item.duration !== -1))
+      :
+      await createSequenceDb(user, name === '' ? "Awesome sequence" : name, sequence.filter(item => item.duration !== -1));
     refresh();
     navigation.pop();
   };
@@ -155,7 +171,7 @@ export const CreateSequence = ({ navigation }) => {
         {sequence.map((item, index) => item.duration === -1 ?
         (
           sequence.length < 11 && (
-          <Button key={index} onPress={() => setIsVisible(true)} mode="contained" icon="plus" style={{borderRadius: 10}}>
+          <Button buttonColor={colors.primary} key={index} onPress={() => setIsVisible(true)} mode="contained" icon="plus" style={{borderRadius: 10}}>
             <Text variant="titleMedium" style={{color: colors.white}}>Create module</Text>
           </Button>)
         )
@@ -182,8 +198,8 @@ export const CreateSequence = ({ navigation }) => {
           </View>
         ))}
         </ScrollView>
-      <Button onPress={() => createSequence()} mode="contained" style={{marginBottom: 15}}>
-        <Text style={{fontFamily: 'Inter-Bold', color: colors.white, paddingVertical: '3%'}}>Create sequence</Text>
+      <Button buttonColor={colors.secondary} onPress={() => createSequence()} mode="contained" style={{marginBottom: 15}}>
+        <Text style={{fontFamily: 'Inter-Bold', color: colors.white, paddingVertical: '3%'}}>{update === true ? 'Update' : 'Create'} sequence</Text>
       </Button>
       <CreateModuleModal units={{seconds, setSeconds, minutes, setMinutes, hours, setHours}} index={{selectedIndex, setSelectedIndex}} visible={{isVisible, setIsVisible}} sequence={{sequence, setSequence}} title={{moduleTitle, setModuleTitle}} />
     </SafeAreaView>
