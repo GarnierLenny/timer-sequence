@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import { Text, TextInput, Button, Portal, Modal } from 'react-native-paper';
+import { Text, TextInput, Button, Portal, Modal, Menu, Divider } from 'react-native-paper';
 import { InputForm } from "../../../utils/components/InputForm.utils";
 import { commonStyles } from "../../../utils/styles.utils";
 import { colors } from "../../../utils/colors.utils";
-import { Module, formatSecondsString } from "../../../utils/utils.utils";
+import { Module, featureComingSoon, formatSecondsString } from "../../../utils/utils.utils";
 import ScrollPicker from "react-native-wheel-scrollview-picker";
-import { createSequenceDb, updateSequenceDb } from "../../../utils/firebase/firestore.utils";
+import { createSequenceDb, deleteSequenceDb, updateSequenceDb } from "../../../utils/firebase/firestore.utils";
 import { UserContext } from "../../../utils/context.utils";
 import { useRoute } from "@react-navigation/native";
 
@@ -108,6 +108,7 @@ export const CreateSequence = ({ navigation }) => {
   const {refresh, existing} = useRoute().params;
   const [update, setUpdate] = useState<boolean>(false);
   const [oldTitle, setOldTitle] = useState<string>('');
+  const [visible, setVisible] = useState<boolean>(false);
 
 
   const [sequence, setSequence] = useState<Module[]>([
@@ -147,6 +148,16 @@ export const CreateSequence = ({ navigation }) => {
     navigation.pop();
   };
 
+  const comingSoon = () => {
+    setVisible(false);
+    featureComingSoon();
+  };
+
+  const removeSequence = async () => {
+    await deleteSequenceDb(user, name);
+    navigation.pop();
+  };
+
   return (
     <SafeAreaView style={{flex: 1, width: '90%', alignSelf: 'center', gap: 20}}>
       <View style={styles.section1}>
@@ -156,7 +167,20 @@ export const CreateSequence = ({ navigation }) => {
         <View style={styles.section1Title}>
           <Text style={{fontFamily: 'Inter-Bold'}} variant="headlineSmall">Create a sequence</Text>
         </View>
-        <View style={styles.section1Options} />
+        <View style={styles.section1Options}>
+          <Menu
+            visible={visible}
+            contentStyle={{backgroundColor: colors.thirdary}}
+            style={{marginTop: 65, marginRight: 200}}
+            onDismiss={() => setVisible(false)}
+            anchor={<Icon name="dots-vertical" onPress={() => setVisible(true)} color={colors.secondary} size={30} />}>
+            <Menu.Item onPress={comingSoon} leadingIcon="star-outline" title="Set as favorite" />
+            <Menu.Item onPress={comingSoon} leadingIcon="eye" title="Change to public" />
+            <Menu.Item onPress={comingSoon} leadingIcon="share-variant" title="Share" />
+            <Divider />
+            <Menu.Item onPress={removeSequence} leadingIcon={() => <Icon name="delete" color={colors.redError} size={20} style={{alignSelf: 'center'}} />} titleStyle={{color: colors.redError}} title="Delete" />
+        </Menu>
+        </View>
       </View>
       <View style={styles.section2}>
         <InputForm capitalize="sentences" value={name} setter={setName} label="Enter sequence name" />
@@ -225,7 +249,7 @@ const styles = StyleSheet.create({
   },
   section1Back: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: "center",
     // backgroundColor: '#0ff',
   },
@@ -237,7 +261,7 @@ const styles = StyleSheet.create({
   },
   section1Options: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: "center",
     // backgroundColor: '#0ab',
   },
