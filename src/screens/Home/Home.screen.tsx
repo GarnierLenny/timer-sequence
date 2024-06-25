@@ -11,6 +11,7 @@ import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { getSequencesDb } from "../../utils/firebase/firestore.utils";
 import { Module, featureComingSoon, formatSeconds, formatSecondsHome, formatSecondsString } from "../../utils/utils.utils";
 import Logo from '../../assets/nothing.svg';
+import { showToast } from "../../utils/toast.utils";
 
 export const ActionButton = ({name, size, callback}: any) => {
   return (
@@ -32,6 +33,7 @@ const Home = ({ navigation }: any) => {
   const [visible, setVisible] = useState<boolean[]>([]);
 
   const refresh = () => {
+    showToast('info', 'Refreshing...');
     setKey(key + 1);
   };
 
@@ -44,8 +46,9 @@ const Home = ({ navigation }: any) => {
       setLoading(false);
     }
 
-    if (user !== null)
+    if (user !== null) {
       getSequences();
+    }
 
     return () => {};
   }, [user, key]);
@@ -104,7 +107,7 @@ const Home = ({ navigation }: any) => {
                   {sequence.item.modules.map((item: any, index: number) => index !== 0 && index !== sequence.item.modules.length - 1 && (
                     <View key={index} style={styles.flatlistMapElem}>
                       <Text variant="labelSmall">{item.title} - </Text>
-                      <Text variant="labelSmall">{formatSecondsHome(item.duration)}</Text>
+                      <Text variant="labelSmall">{formatSeconds(item.duration)}</Text>
                     </View>
                   ))}
                 </View>

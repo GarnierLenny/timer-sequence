@@ -9,6 +9,7 @@ import { CreateSequence } from "../screens/Home/components/CreateSequence.screen
 
 export const Stack = createNativeStackNavigator();
 export const Tab = createMaterialBottomTabNavigator();
+export const StackTmp = createNativeStackNavigator();
 
 export const StackScreen = () => {
   return (
@@ -24,8 +25,11 @@ export const StackScreen = () => {
 
 export const BottomTabParent = () => {
   return (
-    <Tab.Navigator theme={theme}>
-      <Tab.Screen component={Home} options={{tabBarIcon: "circle-multiple", tabBarLabel: 'Sequences'}} name="Home" />
-    </Tab.Navigator>
+    // <Tab.Navigator theme={theme}>
+    //   <Tab.Screen component={Home} options={{tabBarIcon: "circle-multiple", tabBarLabel: 'Sequences'}} name="Home" />
+    // </Tab.Navigator>
+    <StackTmp.Navigator screenOptions={{headerShown: false}}>
+      <StackTmp.Screen component={Home} name="Home" />
+    </StackTmp.Navigator>
   );
 };
