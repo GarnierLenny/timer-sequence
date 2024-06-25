@@ -1,5 +1,5 @@
 export const colors = {
-  black: "#000",
+  black: "#000022",
   black1: "#121212",
   black2: "#181818",
   gray1: "#282828",
@@ -11,4 +11,7 @@ export const colors = {
   white: "#fff",
   redError: "#880808",
   clickable: "#4d49fc",
+  primary: '#E28413',
+  secondary: "#000022",
+  thirdary: "#FBF5F3",
 };

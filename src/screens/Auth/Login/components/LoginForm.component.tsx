@@ -32,7 +32,6 @@ const LoginForm = ({ navigation }: any) => {
   });
 
   const onSubmit = (data: any) => {
-    console.log(data);
     signInEmailPassword(data.email, data.password);
   };
 

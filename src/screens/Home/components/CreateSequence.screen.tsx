@@ -2,13 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, Dimensions, ScrollView, KeyboardAvoidingView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import { Text, TextInput, Button, Portal, Modal } from 'react-native-paper';
+import { Text, TextInput, Button, Portal, Modal, Menu, Divider } from 'react-native-paper';
 import { InputForm } from "../../../utils/components/InputForm.utils";
 import { commonStyles } from "../../../utils/styles.utils";
 import { colors } from "../../../utils/colors.utils";
-import { Module, formatSecondsString } from "../../../utils/utils.utils";
+import { Module, featureComingSoon, formatSecondsString } from "../../../utils/utils.utils";
 import ScrollPicker from "react-native-wheel-scrollview-picker";
-import { createSequenceDb } from "../../../utils/firebase/firestore.utils";
+import { createSequenceDb, deleteSequenceDb, updateSequenceDb } from "../../../utils/firebase/firestore.utils";
 import { UserContext } from "../../../utils/context.utils";
 import { useRoute } from "@react-navigation/native";
 
@@ -41,7 +41,7 @@ const Picker = ({label, max, setter}) => {
   )
 };
 
-const CreateModuleModal = ({units, index, visible, title, sequence}: any) => {
+const CreateModuleModal = ({units, index, visible, title, sequence, setKey}: any) => {
   const createModule = (hours: any, minutes: any, seconds: any) => {
     visible.setIsVisible(false);
     if (title.moduleTitle === '') {
@@ -105,13 +105,30 @@ export const CreateSequence = ({ navigation }) => {
   const [minutes, setMinutes] = useState<number>(1);
   const [hours, setHours] = useState<number>(1);
   const {user, setUser} = useContext(UserContext);
-  const {refresh} = useRoute().params;
+  const {refresh, existing} = useRoute().params;
+  const [update, setUpdate] = useState<boolean>(false);
+  const [oldTitle, setOldTitle] = useState<string>('');
+  const [menuVisible, setMenuVisible] = useState<boolean>(false);
+
 
   const [sequence, setSequence] = useState<Module[]>([
     { title: 'Start', duration: 3 },
     { title: '', duration: -1 },
     { title: 'End', duration: 0 },
   ]);
+
+  useEffect(() => {
+    if (existing !== undefined && sequence.length === 3) {
+      setUpdate(true);
+      const i = existing.item.modules.findIndex(elem => elem.duration === -1);
+      if (i === -1) {
+        existing.item.modules.splice(existing.item.modules.length - 1, 0, { title: '', duration: -1 });
+      }
+      setSequence(existing.item.modules);
+      setName(existing.item.title);
+      setOldTitle(existing.item.title);
+    };
+  }, []);
 
   const changeOrder = (index: number, offset: number) => {
     if ((index === 1 && offset === -1) || (index === sequence.length - 3 && offset === 1))
@@ -123,7 +140,21 @@ export const CreateSequence = ({ navigation }) => {
   }
 
   const createSequence = async () => {
-    createSequenceDb(user, name === '' ? "Awesome sequence" : name, sequence.filter(item => item.duration !== -1));
+    update === true ?
+      await updateSequenceDb(user, oldTitle, name === '' ? "Awesome sequence" : name, sequence.filter(item => item.duration !== -1))
+      :
+      await createSequenceDb(user, name === '' ? "Awesome sequence" : name, sequence.filter(item => item.duration !== -1));
+    refresh();
+    navigation.pop();
+  };
+
+  const comingSoon = () => {
+    setMenuVisible(false);
+    featureComingSoon();
+  };
+
+  const removeSequence = async () => {
+    await deleteSequenceDb(user, name);
     refresh();
     navigation.pop();
   };
@@ -137,7 +168,20 @@ export const CreateSequence = ({ navigation }) => {
         <View style={styles.section1Title}>
           <Text style={{fontFamily: 'Inter-Bold'}} variant="headlineSmall">Create a sequence</Text>
         </View>
-        <View style={styles.section1Options} />
+        <View style={styles.section1Options}>
+          <Menu
+            visible={menuVisible}
+            contentStyle={{backgroundColor: colors.thirdary}}
+            style={{marginTop: 65, marginRight: 200}}
+            onDismiss={() => setMenuVisible(false)}
+            anchor={<Icon name="dots-vertical" onPress={() => setMenuVisible(true)} color={colors.secondary} size={30} />}>
+            <Menu.Item onPress={comingSoon} leadingIcon="star-outline" title="Set as favorite" />
+            <Menu.Item onPress={comingSoon} leadingIcon="eye" title="Change to public" />
+            <Menu.Item onPress={comingSoon} leadingIcon="share-variant" title="Share" />
+            <Divider />
+            <Menu.Item onPress={removeSequence} leadingIcon={() => <Icon name="delete" color={colors.redError} size={20} style={{alignSelf: 'center'}} />} titleStyle={{color: colors.redError}} title="Delete" />
+        </Menu>
+        </View>
       </View>
       <View style={styles.section2}>
         <InputForm capitalize="sentences" value={name} setter={setName} label="Enter sequence name" />
@@ -155,7 +199,7 @@ export const CreateSequence = ({ navigation }) => {
         {sequence.map((item, index) => item.duration === -1 ?
         (
           sequence.length < 11 && (
-          <Button key={index} onPress={() => setIsVisible(true)} mode="contained" icon="plus" style={{borderRadius: 10}}>
+          <Button buttonColor={colors.primary} key={index} onPress={() => setIsVisible(true)} mode="contained" icon="plus" style={{borderRadius: 10}}>
             <Text variant="titleMedium" style={{color: colors.white}}>Create module</Text>
           </Button>)
         )
@@ -182,8 +226,8 @@ export const CreateSequence = ({ navigation }) => {
           </View>
         ))}
         </ScrollView>
-      <Button onPress={() => createSequence()} mode="contained" style={{marginBottom: 15}}>
-        <Text style={{fontFamily: 'Inter-Bold', color: colors.white, paddingVertical: '3%'}}>Create sequence</Text>
+      <Button buttonColor={colors.secondary} onPress={() => createSequence()} mode="contained" style={{marginBottom: 15}}>
+        <Text style={{fontFamily: 'Inter-Bold', color: colors.white, paddingVertical: '3%'}}>{update === true ? 'Update' : 'Create'} sequence</Text>
       </Button>
       <CreateModuleModal units={{seconds, setSeconds, minutes, setMinutes, hours, setHours}} index={{selectedIndex, setSelectedIndex}} visible={{isVisible, setIsVisible}} sequence={{sequence, setSequence}} title={{moduleTitle, setModuleTitle}} />
     </SafeAreaView>
@@ -206,7 +250,7 @@ const styles = StyleSheet.create({
   },
   section1Back: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: "center",
     // backgroundColor: '#0ff',
   },
@@ -218,7 +262,7 @@ const styles = StyleSheet.create({
   },
   section1Options: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: "center",
     // backgroundColor: '#0ab',
   },

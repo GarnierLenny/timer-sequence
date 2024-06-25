@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Vibration } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
@@ -7,6 +7,7 @@ import Icon from '@expo/vector-icons/MaterialCommunityIcons';
 import { colors } from '../../utils/colors.utils';
 import { useRoute } from '@react-navigation/native';
 import { formatSeconds } from '../../utils/utils.utils';
+import { activateKeepAwakeAsync, deactivateKeepAwake } from 'expo-keep-awake';
 
 const TimerActionButton = ({callback, label, name, size, color, disabled}: any) => {
   return (
@@ -27,6 +28,10 @@ export const Timer = ({ navigation }: any) => {
     navigation.pop();
   };
 
+  useEffect(() => {
+    activateKeepAwakeAsync();
+  }, []);
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={styles.section1}>
@@ -37,7 +42,7 @@ export const Timer = ({ navigation }: any) => {
           <Text style={{fontFamily: 'Inter-Bold'}} variant="headlineSmall">{sequence.title}</Text>
         </View>
         <View style={styles.section1Options}>
-          <Icon name='cog' size={30} />
+          {/* <Icon name='cog' size={30} /> */}
         </View>
       </View>
       <View style={styles.section2}>
@@ -49,6 +54,7 @@ export const Timer = ({ navigation }: any) => {
             updateInterval={0}
             onComplete={() => {
               setCurrentModule(currentModule + 1);
+              // Vibration.vibrate(400);
               setRestart(restart + 1);
               const newDuration = sequence.modules[currentModule];
               if (newDuration === undefined)
@@ -57,7 +63,7 @@ export const Timer = ({ navigation }: any) => {
             }}
             strokeWidth={25}
             duration={sequence.modules[currentModule] === undefined ? 0 : sequence.modules[currentModule].duration}
-            colors={['#72bcd4', '#72bcd4']}
+            colors={[colors.primary, colors.primary]}
             colorsTime={[100, 0]}
           >
             {({ remainingTime }) => <Text variant="displaySmall" style={{fontFamily: 'Inter-Bold'}}>{formatSeconds(remainingTime)}</Text>}
@@ -70,7 +76,7 @@ export const Timer = ({ navigation }: any) => {
             )}
           </View>
           <View style={styles.moduleTextContainer}>
-          <Text style={{fontFamily: 'Inter-Bold'}} variant="titleLarge">{sequence.modules[currentModule] === undefined ? '' : sequence.modules[currentModule].title}</Text>
+            <Text style={{fontFamily: 'Inter-Bold'}} variant="titleLarge">{sequence.modules[currentModule] === undefined ? '' : sequence.modules[currentModule].title}</Text>
           </View>
           <View style={styles.moduleTextContainer}>
             {currentModule !== sequence.modules.length - 1 && (
@@ -88,6 +94,7 @@ export const Timer = ({ navigation }: any) => {
         }} name="replay" label="Restart" color={colors.black} size={40} />
         <TimerActionButton callback={() => {
           setCurrentModule(currentModule + 1);
+          // Vibration.vibrate(400);
           setRestart(restart + 1);
         }} name="skip-next" disabled={currentModule === sequence.modules.length - 1} label="Skip" color={colors.black} size={40} />
       </View>
@@ -126,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   section2CurrentModule: {
-    flex: 1,
+    flex: 2,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',
@@ -135,7 +142,9 @@ const styles = StyleSheet.create({
   },
   moduleTextContainer: {
     flex: 1,
+    // backgroundColor: '#9b2',
     justifyContent: 'center',
+    textAlign: 'center',
     alignItems: 'center'
   },
   section3: {
