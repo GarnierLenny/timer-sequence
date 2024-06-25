@@ -41,7 +41,7 @@ const Picker = ({label, max, setter}) => {
   )
 };
 
-const CreateModuleModal = ({units, index, visible, title, sequence}: any) => {
+const CreateModuleModal = ({units, index, visible, title, sequence, setKey}: any) => {
   const createModule = (hours: any, minutes: any, seconds: any) => {
     visible.setIsVisible(false);
     if (title.moduleTitle === '') {
@@ -108,7 +108,7 @@ export const CreateSequence = ({ navigation }) => {
   const {refresh, existing} = useRoute().params;
   const [update, setUpdate] = useState<boolean>(false);
   const [oldTitle, setOldTitle] = useState<string>('');
-  const [visible, setVisible] = useState<boolean>(false);
+  const [menuVisible, setMenuVisible] = useState<boolean>(false);
 
 
   const [sequence, setSequence] = useState<Module[]>([
@@ -149,12 +149,13 @@ export const CreateSequence = ({ navigation }) => {
   };
 
   const comingSoon = () => {
-    setVisible(false);
+    setMenuVisible(false);
     featureComingSoon();
   };
 
   const removeSequence = async () => {
     await deleteSequenceDb(user, name);
+    refresh();
     navigation.pop();
   };
 
@@ -169,11 +170,11 @@ export const CreateSequence = ({ navigation }) => {
         </View>
         <View style={styles.section1Options}>
           <Menu
-            visible={visible}
+            visible={menuVisible}
             contentStyle={{backgroundColor: colors.thirdary}}
             style={{marginTop: 65, marginRight: 200}}
-            onDismiss={() => setVisible(false)}
-            anchor={<Icon name="dots-vertical" onPress={() => setVisible(true)} color={colors.secondary} size={30} />}>
+            onDismiss={() => setMenuVisible(false)}
+            anchor={<Icon name="dots-vertical" onPress={() => setMenuVisible(true)} color={colors.secondary} size={30} />}>
             <Menu.Item onPress={comingSoon} leadingIcon="star-outline" title="Set as favorite" />
             <Menu.Item onPress={comingSoon} leadingIcon="eye" title="Change to public" />
             <Menu.Item onPress={comingSoon} leadingIcon="share-variant" title="Share" />

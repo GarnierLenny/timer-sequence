@@ -31,6 +31,10 @@ const Home = ({ navigation }: any) => {
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState<boolean[]>([]);
 
+  const refresh = () => {
+    setKey(key + 1);
+  };
+
   useEffect(() => {
     // console.log('Render');
     const getSequences = async () => {
@@ -59,8 +63,9 @@ const Home = ({ navigation }: any) => {
     <SafeAreaView style={{ ...commonStyles.viewWrapper, flex: 1 }}>
       <View style={styles.topContainer}>
         <Text variant="headlineSmall" style={{...commonStyles.primaryText, fontFamily: 'Inter-Bold', color: colors.secondary}}>Your sequences</Text>
-        <View style={{backgroundColor: colors.white, flexDirection: 'row'}}>
-          <Icon name="plus" color={colors.secondary} size={30} onPress={() => navigation.push('CreateSequence', {refresh: () => setKey(key + 1)})} />
+        <View style={{flexDirection: 'row', gap: 10}}>
+          <Icon name="reload" onPress={refresh} size={30} color={colors.secondary} />
+          <Icon name="plus" color={colors.secondary} size={30} onPress={() => navigation.push('CreateSequence', {refresh: refresh})} />
         </View>
       </View>
       <View style={styles.bottomContainer}>
@@ -73,7 +78,7 @@ const Home = ({ navigation }: any) => {
               <Text variant="titleMedium" style={{fontFamily: 'Inter-Medium', alignSelf: 'center'}}>You have no saved sequences yet</Text>
             </View>
             <View style={{flex: 1, backgroundColor: '#f0000002', gap: 10}}>
-              <Button buttonColor={colors.secondary} onPress={() => navigation.push("CreateSequence", {refresh: () => setKey(key + 1)})} mode="contained" style={{borderRadius: 10, paddingVertical: '2%'}}>
+              <Button buttonColor={colors.secondary} onPress={() => navigation.push("CreateSequence", {refresh: refresh})} mode="contained" style={{borderRadius: 10, paddingVertical: '2%'}}>
                 <Text style={{fontFamily: 'Inter-Bold', color: colors.white}}>Create a sequence</Text>
               </Button>
               <Text style={{fontFamily: "Inter-Medium", alignSelf: 'center'}}>OR</Text>
@@ -109,7 +114,7 @@ const Home = ({ navigation }: any) => {
                 <Button onPress={() => {navigation.navigate('Timer',  {sequence: sequences[sequence.index]})}} icon="play" mode="contained" buttonColor={colors.primary} style={{borderRadius: 10}}>
                   <Text style={{fontFamily: 'Inter-Bold', color: colors.white}}>Play</Text>
               </Button>
-                <Button onPress={() => navigation.push('CreateSequence', {refresh: () => setKey(key + 1), existing: sequence})} icon={() => <Icon name="pencil" color={colors.secondary} size={17} />} mode="outlined" style={{borderRadius: 10, borderColor: colors.secondary}}>
+                <Button onPress={() => navigation.push('CreateSequence', {refresh: refresh, existing: sequence, setKey: setKey})} icon={() => <Icon name="pencil" color={colors.secondary} size={17} />} mode="outlined" style={{borderRadius: 10, borderColor: colors.secondary}}>
                   <Text style={{fontFamily: 'Inter-Bold', color: colors.secondary}}>Edit</Text>
                 </Button>
               </View>
